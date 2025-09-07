@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SophiChain Blazor DatePicker Demo</title>
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="_content/SophiChain.BlazorDatePicker/scb-datepicker.css" />
+    <link rel="stylesheet" href="SophiChain.BlazorDatePicker.Demo.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script>
+        window.blazorCulture = {
+            get: () => window.navigator.language || 'en-US',
+            set: (value) => localStorage.setItem('BlazorCulture', value)
+        };
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/SophiChain.BlazorDatePicker/SophiChainDatePicker.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,426 @@
+@page "/rangepicker"
+@using SophiChain.BlazorDatePicker
+@using SophiChain.BlazorDatePicker.Components
+@using SophiChain.BlazorDatePicker.Utilities
+@using System.Globalization
+
+<PageTitle>Range Picker Demo</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>SCB Range Picker Demo</h1>
+            <p class="lead">A comprehensive date range picker with presets, manual input, and dual-calendar selection.</p>
+            <div class="alert alert-info">
+                <strong>RangeShortcut Guide:</strong> This demo showcases how <strong>RangeShortcut presets</strong> work - predefined date ranges like "Today", "Last 7 Days", "This Month" that users can select with one click. 
+                Each picker can use <code>default presets</code>, <code>custom preset arrays</code>, or <code>smart filtering</code> (PastOnly/FutureOnly).
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Basic Range Picker</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Uses <strong>default presets</strong>: Today, Yesterday, Last 7/30/90 Days, Week/Month to Date, Custom</p>
+                    <div class="mb-3">
+                        <SCBRangePicker @bind-DateRange="basicRange" 
+                                       Label="Select Date Range"
+                                       Color="Color.Primary"
+                                       OnApply="OnBasicRangeApplied"
+                                       OnClear="OnBasicRangeCleared" />
+                    </div>
+                    
+                    @if (basicRange != null)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Selected Range:</strong><br>
+                            Start: @basicRange.Start?.ToString("d")<br>
+                            End: @basicRange.End?.ToString("d")<br>
+                            Duration: @((basicRange.End - basicRange.Start)?.Days + 1) days
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Past Only Range Picker</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small"><strong>PastOnly="true"</strong> + <strong>custom presets</strong>: Only historical ranges shown, future shortcuts automatically filtered out</p>
+                    <div class="mb-3">
+                        <SCBRangePicker @bind-DateRange="pastOnlyRange" 
+                                       Label="Historical Data Range"
+                                       Color="Color.Success"
+                                       PastOnly="true"
+                                       Presets="pastOnlyPresets"
+                                       MaxDays="365"
+                                       OnApply="OnPastOnlyRangeApplied" />
+                    </div>
+                    
+                    @if (pastOnlyRange != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Selected Historical Range:</strong><br>
+                            Start: @pastOnlyRange.Start?.ToString("d")<br>
+                            End: @pastOnlyRange.End?.ToString("d")<br>
+                            Duration: @((pastOnlyRange.End - pastOnlyRange.Start)?.Days + 1) days
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Future Only Range Picker</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small"><strong>FutureOnly="true"</strong> + <strong>custom presets</strong>: Only upcoming ranges shown, past shortcuts automatically filtered out</p>
+                    <div class="mb-3">
+                        <SCBRangePicker @bind-DateRange="futureOnlyRange" 
+                                       Label="Scheduling Range"
+                                       Color="Color.Warning"
+                                       FutureOnly="true"
+                                       Presets="futureOnlyPresets"
+                                       MinDays="1"
+                                       MaxDays="90"
+                                       OnApply="OnFutureOnlyRangeApplied" />
+                    </div>
+                    
+                    @if (futureOnlyRange != null)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Selected Future Range:</strong><br>
+                            Start: @futureOnlyRange.Start?.ToString("d")<br>
+                            End: @futureOnlyRange.End?.ToString("d")<br>
+                            Duration: @((futureOnlyRange.End - futureOnlyRange.Start)?.Days + 1) days
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Custom Presets Range Picker</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small"><strong>Business presets</strong>: Custom array with corporate reporting periods + <strong>RememberRecentRanges</strong> for user-friendly experience</p>
+                    <div class="mb-3">
+                        <SCBRangePicker @bind-DateRange="customPresetsRange" 
+                                       Label="Business Range"
+                                       Color="Color.Info"
+                                       Presets="businessPresets"
+                                       RememberRecentRanges="true"
+                                       OnApply="OnCustomPresetsRangeApplied"
+                                       OnPreviewChange="OnPreviewChanged" />
+                    </div>
+                    
+                    @if (customPresetsRange != null)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Selected Business Range:</strong><br>
+                            Start: @customPresetsRange.Start?.ToString("d")<br>
+                            End: @customPresetsRange.End?.ToString("d")<br>
+                            Duration: @((customPresetsRange.End - customPresetsRange.Start)?.Days + 1) days
+                        </div>
+                    }
+                    
+                    @if (previewRange != null)
+                    {
+                        <div class="alert alert-light">
+                            <small>
+                                <strong>Preview:</strong>
+                                @previewRange.Start?.ToString("d") - @previewRange.End?.ToString("d")
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Constrained Range Picker</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted small"><strong>Smart validation</strong>: RangeShortcuts respect MinDays/MaxDays/MinDate/MaxDate constraints automatically</p>
+                            <div class="mb-3">
+                                <SCBRangePicker @bind-DateRange="constrainedRange" 
+                                               Label="Limited Range (Max 30 days, Min 3 days)"
+                                               Color="Color.Error"
+                                               MinDate="DateTime.Today.AddDays(-60)"
+                                               MaxDate="DateTime.Today.AddDays(60)"
+                                               MinDays="3"
+                                               MaxDays="30"
+                                               ShowClear="true"
+                                               OnApply="OnConstrainedRangeApplied" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if (constrainedRange != null)
+                            {
+                                <div class="alert alert-danger">
+                                    <strong>Constrained Range:</strong><br>
+                                    Start: @constrainedRange.Start?.ToString("d")<br>
+                                    End: @constrainedRange.End?.ToString("d")<br>
+                                    Duration: @((constrainedRange.End - constrainedRange.Start)?.Days + 1) days<br>
+                                    <small class="text-muted">Range is limited to 3-30 days and within ±60 days from today</small>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-light">
+                                    <small class="text-muted">
+                                        Select a range between 3-30 days<br>
+                                        Date range: @DateTime.Today.AddDays(-60).ToString("d") to @DateTime.Today.AddDays(60).ToString("d")
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Different Cultures</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">English (US)</label>
+                            <SCBRangePicker @bind-DateRange="englishRange" 
+                                           Culture="englishCulture"
+                                           Color="Color.Primary"
+                                           DateFormat="MM/dd/yyyy" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">German</label>
+                            <SCBRangePicker @bind-DateRange="germanRange" 
+                                           Culture="germanCulture"
+                                           Color="Color.Secondary"
+                                           DateFormat="dd.MM.yyyy" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Persian (RTL)</label>
+                            <SCBRangePicker @bind-DateRange="persianRange" 
+                                           Culture="persianCulture"
+                                           Color="Color.Info" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Events Log</h5>
+                </div>
+                <div class="card-body">
+                    <div class="bg-light p-3 rounded" style="height: 200px; overflow-y: auto;">
+                        @foreach (var eventMessage in eventMessages.AsEnumerable().Reverse())
+                        {
+                            <div class="small text-muted">
+                                <span class="badge bg-secondary me-2">@eventMessage.Timestamp.ToString("HH:mm:ss")</span>
+                                @eventMessage.Message
+                            </div>
+                        }
+                        @if (!eventMessages.Any())
+                        {
+                            <div class="text-muted small">No events yet. Interact with the range pickers to see events here.</div>
+                        }
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="ClearEvents">Clear Events</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateRange? basicRange;
+    private DateRange? pastOnlyRange;
+    private DateRange? futureOnlyRange;
+    private DateRange? customPresetsRange;
+    private DateRange? constrainedRange;
+    private DateRange? englishRange;
+    private DateRange? germanRange;
+    private DateRange? persianRange;
+    private DateRange? previewRange;
+    
+    private List<EventMessage> eventMessages = new();
+    
+    // Culture instances
+    private readonly CultureInfo englishCulture = new("en-US");
+    private readonly CultureInfo germanCulture = new("de-DE");
+    private readonly CultureInfo persianCulture = new("fa-IR");
+
+    protected override void OnInitialized()
+    {
+        // Set up Persian culture with proper month/day names
+        persianCulture.DateTimeFormat.Calendar = new System.Globalization.PersianCalendar();
+        
+        // Set Persian month names explicitly
+        persianCulture.DateTimeFormat.MonthNames = new string[]
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند", ""
+        };
+        
+        // Set Persian abbreviated month names
+        persianCulture.DateTimeFormat.AbbreviatedMonthNames = new string[]
+        {
+            "فرو", "ارد", "خرد", "تیر", "مرد", "شهر",
+            "مهر", "آبان", "آذر", "دی", "بهم", "اسف", ""
+        };
+        
+        // Set Persian day names
+        persianCulture.DateTimeFormat.DayNames = new string[]
+        {
+            "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"
+        };
+        
+        // Set Persian abbreviated day names
+        persianCulture.DateTimeFormat.AbbreviatedDayNames = new string[]
+        {
+            "ی", "د", "س", "چ", "پ", "ج", "ش"
+        };
+
+        // Initialize with some sample data
+        basicRange = new DateRange(DateTime.Today.AddDays(-7), DateTime.Today);
+        AddEvent("Demo page initialized");
+    }
+
+    // Define custom preset arrays for different scenarios
+    // Past-only presets: Only shows historical ranges, no future dates
+    private RangeShortcut[] pastOnlyPresets = new[]
+    {
+        RangeShortcut.Today,
+        RangeShortcut.Yesterday,
+        RangeShortcut.Last7Days,
+        RangeShortcut.Last30Days,
+        RangeShortcut.LastWeek,
+        RangeShortcut.LastMonth,
+        RangeShortcut.LastQuarter,
+        RangeShortcut.WeekToDate,
+        RangeShortcut.MonthToDate,
+        RangeShortcut.QuarterToDate,
+        RangeShortcut.YearToDate,
+        RangeShortcut.Custom
+    };
+
+    // Future-only presets: Only shows upcoming ranges, no historical dates  
+    private RangeShortcut[] futureOnlyPresets = new[]
+    {
+        RangeShortcut.Today,
+        RangeShortcut.Next7Days,
+        RangeShortcut.Next30Days,
+        RangeShortcut.NextWeek,
+        RangeShortcut.NextMonth,
+        RangeShortcut.ThisWeek,
+        RangeShortcut.ThisMonth,
+        RangeShortcut.Custom
+    };
+
+    // Business-focused presets: Common corporate reporting periods
+    private RangeShortcut[] businessPresets = new[]
+    {
+        RangeShortcut.Today,
+        RangeShortcut.ThisWeek,
+        RangeShortcut.ThisMonth,
+        RangeShortcut.ThisQuarter,
+        RangeShortcut.LastWeek,
+        RangeShortcut.LastMonth,
+        RangeShortcut.LastQuarter,
+        RangeShortcut.PreviousBusinessWeek,
+        RangeShortcut.PreviousBusinessMonth,
+        RangeShortcut.WeekToDate,
+        RangeShortcut.MonthToDate,
+        RangeShortcut.QuarterToDate,
+        RangeShortcut.YearToDate,
+        RangeShortcut.Custom
+    };
+
+    private class EventMessage
+    {
+        public DateTime Timestamp { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
+    private void AddEvent(string message)
+    {
+        eventMessages.Add(new EventMessage { Timestamp = DateTime.Now, Message = message });
+        StateHasChanged();
+    }
+
+    private void ClearEvents()
+    {
+        eventMessages.Clear();
+        StateHasChanged();
+    }
+
+    // Event handlers
+    private void OnBasicRangeApplied(DateRange? range)
+    {
+        AddEvent($"Basic Range Applied: {range?.Start?.ToString("d")} - {range?.End?.ToString("d")}");
+    }
+
+    private void OnBasicRangeCleared()
+    {
+        AddEvent("Basic Range Cleared");
+    }
+
+    private void OnPastOnlyRangeApplied(DateRange? range)
+    {
+        AddEvent($"Past Only Range Applied: {range?.Start?.ToString("d")} - {range?.End?.ToString("d")}");
+    }
+
+    private void OnFutureOnlyRangeApplied(DateRange? range)
+    {
+        AddEvent($"Future Only Range Applied: {range?.Start?.ToString("d")} - {range?.End?.ToString("d")}");
+    }
+
+    private void OnCustomPresetsRangeApplied(DateRange? range)
+    {
+        AddEvent($"Business Range Applied: {range?.Start?.ToString("d")} - {range?.End?.ToString("d")}");
+    }
+
+    private void OnConstrainedRangeApplied(DateRange? range)
+    {
+        AddEvent($"Constrained Range Applied: {range?.Start?.ToString("d")} - {range?.End?.ToString("d")} ({(range?.End - range?.Start)?.Days + 1} days)");
+    }
+
+    private void OnPreviewChanged(DateRange? range)
+    {
+        previewRange = range;
+        StateHasChanged();
+    }
+
+
+}

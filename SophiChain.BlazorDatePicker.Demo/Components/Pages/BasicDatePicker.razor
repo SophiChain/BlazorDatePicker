@@ -1,0 +1,163 @@
+@page "/basic"
+
+<PageTitle>Basic DatePicker - SCB DatePicker Demo</PageTitle>
+
+<h1>Basic DatePicker</h1>
+
+<p>This page demonstrates the basic functionality of the SophiChain Blazor DatePicker component.</p>
+
+<div class="demo-section">
+    <h2>Basic Usage</h2>
+    <div class="demo-example">
+        <h4>Simple DatePicker</h4>
+        <SCBDatePicker @bind-Date="basicDate" 
+                       Label="Select Date" 
+                       Placeholder="Choose a date..." />
+        <div class="result">
+            <strong>Selected Date:</strong> @(basicDate?.ToString("F") ?? "None selected")
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>With Constraints</h2>
+    <div class="demo-example">
+        <h4>Date Range Constraints</h4>
+        <SCBDatePicker @bind-Date="constrainedDate" 
+                       Label="Date within range" 
+                       MinDate="minDate"
+                       MaxDate="maxDate" />
+        <div class="info">
+            <p><strong>Min Date:</strong> @minDate.ToString("d")</p>
+            <p><strong>Max Date:</strong> @maxDate.ToString("d")</p>
+        </div>
+        <div class="result">
+            <strong>Selected Date:</strong> @(constrainedDate?.ToString("F") ?? "None selected")
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Custom Date Format</h2>
+    <div class="demo-example">
+        <h4>Different Display Formats</h4>
+        <div class="format-examples">
+            <div>
+                <label>Short Date Pattern:</label>
+                <SCBDatePicker @bind-Date="formatDate1" 
+                               DateFormat="M/d/yyyy" />
+                <span class="format-info">M/d/yyyy</span>
+            </div>
+            
+            <div>
+                <label>Long Date Pattern:</label>
+                <SCBDatePicker @bind-Date="formatDate2" 
+                               DateFormat="dddd, MMMM dd, yyyy" />
+                <span class="format-info">dddd, MMMM dd, yyyy</span>
+            </div>
+            
+            <div>
+                <label>ISO Format:</label>
+                <SCBDatePicker @bind-Date="formatDate3" 
+                               DateFormat="yyyy-MM-dd" />
+                <span class="format-info">yyyy-MM-dd</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Disabled Dates</h2>
+    <div class="demo-example">
+        <h4>Weekend Disabling</h4>
+        <SCBDatePicker @bind-Date="weekdayDate" 
+                       Label="Weekdays Only" 
+                       IsDateDisabledFunc="IsWeekend" />
+        <div class="info">
+            <p>Weekends (Saturday and Sunday) are disabled.</p>
+        </div>
+        <div class="result">
+            <strong>Selected Date:</strong> @(weekdayDate?.ToString("F") ?? "None selected")
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Different States</h2>
+    <div class="demo-states">
+        <div class="demo-example">
+            <h4>Normal</h4>
+            <SCBDatePicker @bind-Date="normalDate" 
+                           Label="Normal DatePicker" />
+        </div>
+        
+        <div class="demo-example">
+            <h4>Disabled</h4>
+            <SCBDatePicker @bind-Date="disabledDate" 
+                           Label="Disabled DatePicker" 
+                           Disabled="true" />
+        </div>
+        
+        <div class="demo-example">
+            <h4>ReadOnly</h4>
+            <SCBDatePicker @bind-Date="readOnlyDate" 
+                           Label="ReadOnly DatePicker" 
+                           ReadOnly="true" />
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Event Handling</h2>
+    <div class="demo-example">
+        <h4>Date Change Events</h4>
+        <SCBDatePicker @bind-Date="eventDate" 
+                       Label="Event Handler Demo" />
+        
+        <div class="event-log">
+            <h5>Event Log:</h5>
+            <div class="log-entries">
+                @foreach (var entry in eventLog.TakeLast(5))
+                {
+                    <div class="log-entry">@entry</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime? basicDate;
+    private DateTime? constrainedDate;
+    private DateTime? formatDate1;
+    private DateTime? formatDate2;
+    private DateTime? formatDate3;
+    private DateTime? weekdayDate;
+    private DateTime? normalDate;
+    private DateTime? disabledDate = DateTime.Today;
+    private DateTime? readOnlyDate = DateTime.Today;
+    private DateTime? eventDate;
+    
+    private DateTime minDate = DateTime.Today.AddDays(-30);
+    private DateTime maxDate = DateTime.Today.AddDays(30);
+    
+    private List<string> eventLog = new();
+
+    private bool IsWeekend(DateTime date)
+    {
+        return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+    }
+    
+    private void OnDateChanged(DateTime? newDate)
+    {
+        var timestamp = DateTime.Now.ToString("HH:mm:ss");
+        var dateStr = newDate?.ToString("F") ?? "null";
+        eventLog.Add($"[{timestamp}] Date changed to: {dateStr}");
+        
+        // Keep only last 10 entries
+        if (eventLog.Count > 10)
+        {
+            eventLog.RemoveAt(0);
+        }
+    }
+}

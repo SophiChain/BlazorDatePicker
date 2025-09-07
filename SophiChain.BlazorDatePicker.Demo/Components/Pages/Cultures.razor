@@ -1,0 +1,564 @@
+@page "/cultures"
+
+<PageTitle>Multi-Culture Support - SCB DatePicker Demo</PageTitle>
+
+<h1>Multi-Culture Support</h1>
+
+<p>This page demonstrates the multi-cultural capabilities of SophiChain Blazor DatePicker.</p>
+
+<div class="demo-section">
+    <h2>Different Cultures</h2>
+    <div class="cultures-grid">
+        <div class="demo-example">
+            <h4>English (US)</h4>
+            <SCBDatePicker @bind-Date="usDate" 
+                           Label="US Date Format" 
+                           Culture="usCulture" />
+            <div class="result">
+                <strong>Selected:</strong> @(usDate?.ToString("F", usCulture) ?? "None")
+            </div>
+        </div>
+        
+        <div class="demo-example">
+            <h4>Arabic (Saudi Arabia)</h4>
+            <SCBDatePicker @bind-Date="arDate" 
+                           Label="التاريخ العربي" 
+                           Culture="arCulture" />
+            <div class="result">
+                <strong>Selected:</strong> @(arDate?.ToString("F", arCulture) ?? "None")
+            </div>
+        </div>
+        
+        <div class="demo-example">
+            <h4>French (France)</h4>
+            <SCBDatePicker @bind-Date="frDate" 
+                           Label="Date française" 
+                           Culture="frCulture" />
+            <div class="result">
+                <strong>Selected:</strong> @(frDate?.ToString("F", frCulture) ?? "None")
+            </div>
+        </div>
+        
+        <div class="demo-example">
+            <h4>German (Germany)</h4>
+            <SCBDatePicker @bind-Date="deDate" 
+                           Label="Deutsche Datum" 
+                           Culture="deCulture" />
+            <div class="result">
+                <strong>Selected:</strong> @(deDate?.ToString("F", deCulture) ?? "None")
+            </div>
+        </div>
+        <div class="demo-example">
+            <h4>Persian (farsi)</h4>
+            <SCBDatePicker @bind-Date="faDate" 
+                           Label="فارسی" 
+                           Culture="faCulture" />
+            <div class="result">
+                <strong>Selected:</strong> @(faDate?.ToString("F", faCulture) ?? "None")
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Localization Documentation -->
+<div class="demo-section">
+    <h2>📚 Expanding Localization Support</h2>
+    <p>SophiChain Blazor DatePicker uses a flexible localization system that automatically selects the appropriate language based on the component's <code>Culture</code> property.</p>
+    
+    <div class="localization-docs">
+        <div class="supported-languages">
+            <h3>🌍 Currently Supported Languages</h3>
+            <div class="language-list">
+                <span class="language-badge">🇺🇸 English (en-*)</span>
+                <span class="language-badge">🇪🇸 Spanish (es-*)</span>
+                <span class="language-badge">🇫🇷 French (fr-*)</span>
+                <span class="language-badge">🇩🇪 German (de-*)</span>
+                <span class="language-badge">🇸🇦 Arabic (ar-*)</span>
+                <span class="language-badge">🇮🇷 Persian (fa-*)</span>
+            </div>
+            <p class="note"><em>* The system supports all variants of these language codes (e.g., en-US, en-GB, es-ES, es-MX)</em></p>
+        </div>
+        
+        <div class="how-to-expand">
+            <h3>🔧 How to Add New Language Support</h3>
+            
+            <div class="approach-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="showTab('nuget-user')">📦 NuGet Package User</button>
+                    <button class="tab-button" onclick="showTab('contributor')">👩‍💻 Source Code Contributor</button>
+                </div>
+                
+                <div class="tab-content active" id="nuget-user">
+                    <h4>For NuGet Package Users</h4>
+                    <p>If you're using the DatePicker via NuGet and want to add a new language (like Italian), follow these steps:</p>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <h4>Step 1: Create Your Custom Localizer</h4>
+                            <p>Create a new class in your own project:</p>
+                            <pre class="code-example"><code>using SophiChain.BlazorDatePicker.Localizations;
+
+namespace YourProject.Localizations;
+
+public class ItalianDatePickerLocalizer : IDatePickerLocalizer
+{
+    // Common UI elements
+    public string Close => "Chiudi";
+    public string Clear => "Cancella";
+    public string Cancel => "Annulla";
+    public string Apply => "Applica";
+    public string Selected => "Selezionato:";
+    public string PreviousMonth => "Mese precedente";
+    public string NextMonth => "Mese successivo";
+    
+    // Date Picker specific
+    public string SelectDate => "Seleziona data";
+    public string Years => "Anni";
+    public string Months => "Mesi";
+    public string QuickSelect => "Selezione rapida";
+    public string Today => "Oggi";
+    public string Yesterday => "Ieri";
+    public string Tomorrow => "Domani";
+    public string SelectedDate => "Data selezionata";
+    public string SelectDateFromCalendar => "Seleziona una data dal calendario o dalle scorciatoie";
+    
+    // Range Picker specific
+    public string SelectDateRange => "Seleziona intervallo di date";
+    public string SelectDateRangePlaceholder => "Seleziona intervallo di date";
+    public string Recent => "Recenti";
+    public string StartDate => "Data di inizio";
+    public string EndDate => "Data di fine";
+    public string Days => "giorni";
+    public string SelectEndDateToComplete => "Seleziona la data di fine per completare l'intervallo";
+    public string SelectStartAndEndDates => "Seleziona le date di inizio e fine";
+}</code></pre>
+                        </div>
+                        
+                        <div class="step">
+                            <h4>Step 2: Register Your Custom Localizer</h4>
+                            <p>In your <code>Program.cs</code>, register the DatePicker with your custom localizer:</p>
+                            <pre class="code-example"><code>// Program.cs
+using YourProject.Localizations;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Register DatePicker with your custom Italian localizer
+builder.Services.AddSophiChainBlazorDatePickerWithCustomLocalizer&lt;ItalianDatePickerLocalizer&gt;();
+
+var app = builder.Build();
+// ... rest of your configuration</code></pre>
+                        </div>
+                        
+                        <div class="step">
+                            <h4>Step 3: Use Your Custom Localization</h4>
+                            <p><strong>Important:</strong> When using a custom localizer, ALL DatePickers will use Italian text regardless of their Culture property:</p>
+                            <pre class="code-example"><code>&lt;SCBDatePicker @@bind-Date="italianDate" 
+               Label="Data italiana" 
+               Culture="itCulture" />
+
+@@code {
+    private CultureInfo itCulture = new("it-IT");
+}</code></pre>
+                            <p class="warning">⚠️ <strong>Note:</strong> This approach makes ALL DatePickers in your app use Italian text. If you need multiple languages simultaneously, consider creating a wrapper component or contributing to the main package.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="contributor">
+                    <h4>For Source Code Contributors</h4>
+                    <p>If you have access to the source code and want to contribute a new language permanently:</p>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <h4>Step 1: Create a New Localizer Class</h4>
+                            <p>Create a new file in <code>SophiChain.BlazorDatePicker/Localizations/</code> directory:</p>
+                            <pre class="code-example"><code>// Example: ItalianDatePickerLocalizer.cs
+namespace SophiChain.BlazorDatePicker.Localizations;
+
+public class ItalianDatePickerLocalizer : DefaultDatePickerLocalizer
+{
+    // Common UI elements
+    public override string Close => "Chiudi";
+    public override string Clear => "Cancella";
+    // ... all other properties
+}</code></pre>
+                        </div>
+                        
+                        <div class="step">
+                            <h4>Step 2: Register in LocalizerFactory</h4>
+                            <p>Update <code>DatePickerLocalizerFactory.cs</code> to include your new language:</p>
+                            <pre class="code-example"><code>return cultureName switch
+{
+    var c when c.StartsWith("es") => new SpanishDatePickerLocalizer(),
+    var c when c.StartsWith("fr") => new FrenchDatePickerLocalizer(),
+    var c when c.StartsWith("de") => new GermanDatePickerLocalizer(),
+    var c when c.StartsWith("ar") => new ArabicDatePickerLocalizer(),
+    var c when c.StartsWith("fa") => new PersianDatePickerLocalizer(),
+    var c when c.StartsWith("it") => new ItalianDatePickerLocalizer(), // ← Add this
+    _ => new DefaultDatePickerLocalizer()
+};</code></pre>
+                        </div>
+                        
+                        <div class="step">
+                            <h4>Step 3: Submit Pull Request</h4>
+                            <p>Submit your changes as a pull request to the main repository to benefit all users.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="localizer-interface">
+            <h3>📋 Required Localizer Properties</h3>
+            <p>Your localizer class must override these properties:</p>
+            <div class="property-categories">
+                <div class="category">
+                    <h5>Common UI Elements</h5>
+                    <ul class="property-list">
+                        <li><code>Close</code> - Close button</li>
+                        <li><code>Clear</code> - Clear button</li>
+                        <li><code>Cancel</code> - Cancel button</li>
+                        <li><code>Apply</code> - Apply/OK button</li>
+                        <li><code>Selected</code> - "Selected:" label</li>
+                        <li><code>PreviousMonth</code> - Previous month navigation</li>
+                        <li><code>NextMonth</code> - Next month navigation</li>
+                    </ul>
+                </div>
+                <div class="category">
+                    <h5>Date Picker Specific</h5>
+                    <ul class="property-list">
+                        <li><code>SelectDate</code> - Main title</li>
+                        <li><code>Years</code> - Years view label</li>
+                        <li><code>Months</code> - Months view label</li>
+                        <li><code>Today</code> - Today shortcut</li>
+                        <li><code>Yesterday</code> - Yesterday shortcut</li>
+                        <li><code>Tomorrow</code> - Tomorrow shortcut</li>
+                        <li><code>QuickSelect</code> - Quick select section title</li>
+                    </ul>
+                </div>
+                <div class="category">
+                    <h5>Range Picker Specific</h5>
+                    <ul class="property-list">
+                        <li><code>SelectDateRange</code> - Range picker title</li>
+                        <li><code>StartDate</code> - Start date label</li>
+                        <li><code>EndDate</code> - End date label</li>
+                        <li><code>Recent</code> - Recent shortcuts section</li>
+                        <li><code>Days</code> - Days unit label</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="advanced-customization">
+            <h3>⚙️ Advanced Customization</h3>
+            <p>For more control over localization behavior:</p>
+            <div class="advanced-options">
+                <div class="option">
+                    <h5>Custom Localizer for Specific Components</h5>
+                    <pre class="code-example"><code>// Register a custom localizer for all components
+services.AddSophiChainBlazorDatePickerWithCustomLocalizer&lt;MyCustomLocalizer&gt;();</code></pre>
+                </div>
+                <div class="option">
+                    <h5>English-Only Mode</h5>
+                    <pre class="code-example"><code>// Disable automatic culture detection, use English only
+services.AddSophiChainBlazorDatePickerEnglishOnly();</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime? usDate;
+    private DateTime? arDate; 
+    private DateTime? frDate;
+    private DateTime? deDate;
+    private DateTime? faDate;
+    
+    private CultureInfo usCulture = new("en-US");
+    private CultureInfo arCulture = new("ar-SA");
+    private CultureInfo frCulture = new("fr-FR");
+    private CultureInfo deCulture = new("de-DE");
+    private CultureInfo faCulture = new("fa-IR");
+
+    protected override void OnInitialized()
+    {
+        // Set up Persian culture with proper month/day names
+        faCulture.DateTimeFormat.Calendar = new System.Globalization.PersianCalendar();
+        
+        // Set Persian month names explicitly
+        faCulture.DateTimeFormat.MonthNames = new string[]
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند", ""
+        };
+        
+        // Set Persian abbreviated month names
+        faCulture.DateTimeFormat.AbbreviatedMonthNames = new string[]
+        {
+            "فرو", "ارد", "خرد", "تیر", "مرد", "شهر",
+            "مهر", "آبان", "آذر", "دی", "بهم", "اسف", ""
+        };
+        
+        // Set Persian day names
+        faCulture.DateTimeFormat.DayNames = new string[]
+        {
+            "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"
+        };
+        
+        // Set Persian abbreviated day names
+        faCulture.DateTimeFormat.AbbreviatedDayNames = new string[]
+        {
+            "ی", "د", "س", "چ", "پ", "ج", "ش"
+        };
+    }
+}
+
+<style>
+    .cultures-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .demo-example {
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #f9fafb;
+    }
+    
+    .result {
+        margin-top: 12px;
+        padding: 8px;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+    }
+    
+    /* Localization Documentation Styles */
+    .localization-docs {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .supported-languages {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .language-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 15px 0;
+    }
+    
+    .language-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #e0f2fe;
+        border: 1px solid #0891b2;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #0c4a6e;
+    }
+    
+    .note {
+        font-style: italic;
+        color: #64748b;
+        margin-top: 10px;
+    }
+    
+    .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .step {
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step h4 {
+        color: #1e293b;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+    
+    .code-example {
+        background: #1e293b;
+        color: #f1f5f9;
+        border-radius: 6px;
+        padding: 16px;
+        margin: 10px 0;
+        overflow-x: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+    
+    .property-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .category {
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .category h5 {
+        margin: 0 0 12px 0;
+        color: #1e293b;
+        font-size: 16px;
+    }
+    
+    .property-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .property-list li {
+        padding: 4px 0;
+        font-size: 14px;
+        color: #475569;
+    }
+    
+    .property-list code {
+        background: #e2e8f0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 13px;
+        color: #1e293b;
+        font-weight: 500;
+    }
+    
+    .advanced-options {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .option {
+        padding: 16px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 8px;
+    }
+    
+    .option h5 {
+        margin: 0 0 10px 0;
+        color: #92400e;
+    }
+    
+    .how-to-expand, .localizer-interface, .advanced-customization {
+        margin: 30px 0;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .demo-section {
+        margin: 40px 0;
+    }
+    
+    .demo-section h2 {
+        color: #1e293b;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    /* Tab Styles */
+    .approach-tabs {
+        margin: 20px 0;
+    }
+    
+    .tab-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .tab-button {
+        padding: 12px 20px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        font-weight: 500;
+        color: #64748b;
+        transition: all 0.2s;
+    }
+    
+    .tab-button:hover {
+        background: #e2e8f0;
+        color: #475569;
+    }
+    
+    .tab-button.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #2563eb;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px;
+        background: white;
+        border-radius: 0 8px 8px 8px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .warning {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 10px 0;
+        color: #92400e;
+    }
+</style>
+
+<script>
+    function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+        
+        // Add active class to clicked button
+        event.target.classList.add('active');
+    }
+</script>

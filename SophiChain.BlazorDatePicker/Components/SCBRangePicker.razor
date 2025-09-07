@@ -1,0 +1,386 @@
+@using SophiChain.BlazorDatePicker.Extensions
+@using SophiChain.BlazorDatePicker.Utilities
+@inherits SCBBaseDatePicker
+@namespace SophiChain.BlazorDatePicker.Components
+
+<!-- Trigger Input -->
+<div class="scb-rangepicker-trigger" @onclick="ShowAsync" @attributes="UserAttributes">
+    <div class="scb-rangepicker-input @(Disabled ? "scb-disabled" : "") @(ReadOnly ? "scb-readonly" : "")" style="@Style">
+        <span class="scb-rangepicker-value">
+            @if (DateRange is { Start: not null, End: not null })
+            {
+                <span>@DateRange.Start.Value.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture) - @DateRange.End.Value.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture)</span>
+            }
+            else
+            {
+                <span class="scb-placeholder">@Localizer.SelectDateRangePlaceholder</span>
+            }
+        </span>
+        <span class="scb-rangepicker-icon">📅</span>
+    </div>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="scb-label">@Label</label>
+    }
+</div>
+
+<!-- Range Picker Popup -->
+@if (_showPicker)
+{
+    <div class="scb-rangepicker-overlay" @onclick="CancelAsync">
+        <div class="scb-rangepicker-popup @Class" dir="@GetTextDirection()" data-culture="@Culture.Name" @onclick:stopPropagation="true">
+            
+            <!-- Header -->
+            <div class="scb-rangepicker-header">
+                <h4>@Localizer.SelectDateRange</h4>
+                <button type="button" class="scb-close-button" @onclick="CancelAsync" aria-label="@Localizer.Close">×</button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="scb-rangepicker-content">
+                
+                <!-- Left Column: Presets and Recent Ranges -->
+                <div class="scb-rangepicker-presets">
+                    
+                    <!-- Recent Ranges -->
+                    @if (RememberRecentRanges && _recentRanges.Any())
+                    {
+                        <div class="scb-preset-section">
+                            <h5 class="scb-preset-title">@Localizer.Recent</h5>
+                            @foreach (var recentRange in _recentRanges)
+                            {
+                                <button type="button" 
+                                        class="scb-preset-item @(IsRecentRangeSelected(recentRange) ? "scb-preset-selected" : "")"
+                                        @onclick="(() => SelectRecentRangeAsync(recentRange))">
+                                    @recentRange.Start?.ToString("MMM d", Culture) - @recentRange.End?.ToString("MMM d", Culture)
+                                </button>
+                            }
+                        </div>
+                    }
+
+                    <!-- Presets -->
+                    <div class="scb-preset-section">
+                        <h5 class="scb-preset-title">@Localizer.QuickSelect</h5>
+                        @foreach (var preset in GetActivePresets())
+                        {
+                            <button type="button" 
+                                    class="scb-preset-item @(_selectedPreset == preset ? "scb-preset-selected" : "")"
+                                    @onclick="(() => SelectPresetAsync(preset))">
+                                @Localizer.GetRangeShortcutText(preset)
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Right Column: Inputs and Calendar -->
+                <div class="scb-rangepicker-main">
+                    
+                    <!-- Date Inputs -->
+                    <div class="scb-rangepicker-inputs">
+                        <div class="scb-input-group">
+                            <label for="start-date">@Localizer.StartDate</label>
+                            <input type="text" 
+                                   id="start-date"
+                                   class="scb-input" 
+                                   placeholder="@Localizer.StartDate" 
+                                   value="@GetStartText()" 
+                                   @onchange="OnStartTextChanged"
+                                   @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+                        </div>
+                        <div class="scb-input-separator">→</div>
+                        <div class="scb-input-group">
+                            <label for="end-date">@Localizer.EndDate</label>
+                            <input type="text" 
+                                   id="end-date"
+                                   class="scb-input" 
+                                   placeholder="@Localizer.EndDate" 
+                                   value="@GetEndText()" 
+                                   @onchange="OnEndTextChanged"
+                                   @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+                        </div>
+                    </div>
+
+                    <!-- Dual Calendar -->
+                    <div class="scb-rangepicker-calendar" dir="@GetTextDirection()">
+                        
+                        <!-- Calendar Navigation -->
+                        <div class="scb-calendar-nav">
+                            <button type="button" class="scb-nav-button" @onclick="PreviousMonth" aria-label="@Localizer.PreviousMonth">❮</button>
+                            <div class="scb-month-headers">
+                                <div class="scb-month-header">
+                                    <button type="button" class="scb-month-button" @onclick="(() => ShowMonthPicker(0))">
+                                        @GetMonthName(0) @GetYear(0)
+                                    </button>
+                                </div>
+                                <div class="scb-month-header">
+                                    <button type="button" class="scb-month-button" @onclick="(() => ShowMonthPicker(1))">
+                                        @GetMonthName(1) @GetYear(1)
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="scb-nav-button" @onclick="NextMonth" aria-label="@Localizer.NextMonth">❯</button>
+                        </div>
+
+                        <!-- Dual Calendars -->
+                        <div class="scb-calendars-grid">
+                            @for (int monthOffset = 0; monthOffset < DisplayMonths; monthOffset++)
+                            {
+                                int currentMonthOffset = monthOffset;
+                                <div class="scb-calendar-month">
+                                    
+                                    <!-- Day Names Header -->
+                                    <div class="scb-day-names">
+                                        @foreach (var dayName in GetAbbreviatedDayNames())
+                                        {
+                                            <div class="scb-day-name">@dayName</div>
+                                        }
+                                    </div>
+
+                                    <!-- Calendar Days -->
+                                    <div class="scb-days-grid">
+                                        @for (int week = 0; week < 6; week++)
+                                        {
+                                            @foreach (var day in GetWeek(currentMonthOffset, week))
+                                            {
+                                                <button type="button" 
+                                                        class="scb-day-button @GetDayClasses(currentMonthOffset, day)"
+                                                        @onclick="(() => HandleDayClick(day))"
+                                                        @onmouseover="(() => HandleDayHover(day))"
+                                                        disabled="@IsDayDisabled(day)"
+                                                        aria-label="@day.ToString("D", Culture)">
+                                                    @Culture.Calendar.GetDayOfMonth(day)
+                                                </button>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Selection Info -->
+                    <div class="scb-rangepicker-info">
+                        @if (_previewRange is { Start: not null, End: not null })
+                        {
+                            <div class="scb-selection-summary">
+                                <strong>@Localizer.Selected</strong> 
+                                @_previewRange.Start.Value.ToString("d", Culture) - @_previewRange.End.Value.ToString("d", Culture)
+                                (@((_previewRange.End.Value - _previewRange.Start.Value).Days + 1) @Localizer.Days)
+                            </div>
+                        }
+                        else if (_firstDate != null)
+                        {
+                            <div class="scb-selection-help">
+                                <em>@Localizer.SelectEndDateToComplete</em>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="scb-selection-help">
+                                <em>@Localizer.SelectStartAndEndDates</em>
+                            </div>
+                        }
+
+                        <!-- Validation Messages -->
+                        @{
+                            var validationMessage = GetValidationMessage();
+                        }
+                        @if (!string.IsNullOrEmpty(validationMessage))
+                        {
+                            <div class="scb-validation-message">
+                                ⚠️ @validationMessage
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="scb-rangepicker-footer">
+                <div class="scb-footer-left">
+                    @if (ShowClear && DateRange != null)
+                    {
+                        <button type="button" class="scb-button scb-button-text" @onclick="ClearAsync">
+                            @ClearButtonText
+                        </button>
+                    }
+                </div>
+                <div class="scb-footer-right">
+                    <button type="button" class="scb-button scb-button-secondary" @onclick="CancelAsync">
+                        @CancelButtonText
+                    </button>
+                    <button type="button" 
+                            class="scb-button scb-button-primary @(!_hasValidRange ? "scb-disabled" : "")" 
+                            @onclick="ApplyAsync"
+                            disabled="@(!_hasValidRange)">
+                        @ApplyButtonText
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private async Task HandleDayClick(DateTime dateTime)
+    {
+        await OnDayClickedAsync(dateTime);
+    }
+
+    private void HandleDayHover(DateTime dateTime)
+    {
+        // Show preview range when hovering if we have a start date but no end date
+        if (_firstDate != null && _secondDate == null && _selectedPreset == RangeShortcut.Custom)
+        {
+            var start = _firstDate.Value < dateTime ? _firstDate.Value : dateTime;
+            var end = _firstDate.Value < dateTime ? dateTime : _firstDate.Value;
+            
+            // Update preview for hover effect (this doesn't trigger events)
+            // The CSS classes will handle the visual preview
+        }
+    }
+
+    protected void OnStartTextChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        _selectedPreset = RangeShortcut.Custom;
+        
+        if (DateTime.TryParse(value, Culture, out var startDate))
+        {
+            var newRange = new DateRange(startDate, _previewRange?.End);
+            _previewRange = newRange;
+            _hasValidRange = IsValidRange(newRange);
+            
+            if (_hasValidRange && newRange.Start != null)
+            {
+                _firstDate = newRange.Start;
+                _secondDate = newRange.End;
+                _isInSelectionMode = false;
+            }
+            
+            OnPreviewChange.InvokeAsync(_previewRange);
+        }
+        StateHasChanged();
+    }
+
+    protected void OnEndTextChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        _selectedPreset = RangeShortcut.Custom;
+        
+        if (DateTime.TryParse(value, Culture, out var endDate))
+        {
+            var newRange = new DateRange(_previewRange?.Start, endDate);
+            _previewRange = newRange;
+            _hasValidRange = IsValidRange(newRange);
+            
+            if (_hasValidRange && newRange.End != null)
+            {
+                _firstDate = newRange.Start;
+                _secondDate = newRange.End;
+                _isInSelectionMode = false;
+            }
+            
+            OnPreviewChange.InvokeAsync(_previewRange);
+        }
+        StateHasChanged();
+    }
+
+    protected void PreviousMonth()
+    {
+        var currentMonth = PickerMonth ?? DateTime.Today.StartOfMonth(Culture);
+        PickerMonth = currentMonth.AddMonths(-1);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+    }
+
+    protected void NextMonth()
+    {
+        var currentMonth = PickerMonth ?? DateTime.Today.StartOfMonth(Culture);
+        PickerMonth = currentMonth.AddMonths(1);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+    }
+
+    protected string GetMonthName(int monthOffset)
+    {
+        var date = GetMonthStart(monthOffset);
+        return Culture.DateTimeFormat.MonthNames[Culture.Calendar.GetMonth(date) - 1];
+    }
+
+    protected int GetYear(int monthOffset)
+    {
+        var date = GetMonthStart(monthOffset);
+        return Culture.Calendar.GetYear(date);
+    }
+
+    protected IEnumerable<string> GetAbbreviatedDayNames()
+    {
+        var dayNamesNormal = Culture.DateTimeFormat.AbbreviatedDayNames;
+        var firstDay = (int)GetFirstDayOfWeek();
+        var dayNamesShifted = new string[7];
+        
+        // For RTL cultures, we need to ensure proper alignment
+        var isRtl = Culture.TextInfo.IsRightToLeft;
+        var isPersian = Culture.Name.StartsWith("fa", StringComparison.OrdinalIgnoreCase);
+        
+        for (int i = 0; i < 7; i++)
+        {
+            dayNamesShifted[i] = dayNamesNormal[(firstDay + i) % 7];
+        }
+        
+        // For RTL languages, we need to handle the layout properly
+        if (isRtl)
+        {
+            // For Persian calendar, ensure the days start from Saturday on the right
+            if (isPersian)
+            {
+                // Persian week starts with Saturday, ensure proper RTL display
+                // Don't reverse if first day is already Saturday (6), just return as-is for RTL
+                return dayNamesShifted;
+            }
+            else
+            {
+                // For other RTL languages (like Arabic), reverse the array
+                return dayNamesShifted.Reverse();
+            }
+        }
+        
+        return dayNamesShifted;
+    }
+
+    protected string? GetStartText()
+    {
+        return _previewRange?.Start?.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture);
+    }
+
+    protected string? GetEndText()
+    {
+        return _previewRange?.End?.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture);
+    }
+
+    protected string GetTextDirection()
+    {
+        // Persian, Arabic, Hebrew, and other RTL cultures
+        return Culture.Name.StartsWith("fa") || Culture.Name.StartsWith("ar") || Culture.Name.StartsWith("he") || 
+               Culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    }
+
+    protected async Task SelectRecentRangeAsync(DateRange range)
+    {
+        _previewRange = range;
+        _hasValidRange = IsValidRange(range);
+        _selectedPreset = RangeShortcut.Custom;
+        UpdateCalendarFromPreview();
+        await OnPreviewChange.InvokeAsync(_previewRange);
+        StateHasChanged();
+    }
+
+    protected bool IsRecentRangeSelected(DateRange range)
+    {
+        return _previewRange?.Start == range.Start && _previewRange?.End == range.End && _selectedPreset == RangeShortcut.Custom;
+    }
+
+    protected void ShowMonthPicker(int monthOffset)
+    {
+        // Future enhancement: implement month/year picker popup
+    }
+}

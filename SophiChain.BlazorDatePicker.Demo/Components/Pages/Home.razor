@@ -1,0 +1,110 @@
+@page "/"
+
+<PageTitle>SophiChain Blazor DatePicker Demo</PageTitle>
+
+<h1>Welcome to SophiChain Blazor DatePicker</h1>
+
+<div class="intro-section">
+    <div class="alert alert-success mb-4">
+        <h5 class="alert-heading">🎉 New: Automatic Culture & Localization!</h5>
+        <p class="mb-0">
+            The DatePicker now automatically detects your application's UI culture and provides appropriate calendar systems and localized text. 
+            No configuration needed - just works out of the box!
+        </p>
+    </div>
+    
+    <p>
+        A powerful and customizable DatePicker component for Blazor applications with comprehensive multi-culture support, including Hijri calendar system.
+    </p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <h3>🗓️ Single Date Selection</h3>
+            <p>Clean and intuitive single date picker with full keyboard and mouse support.</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>📅 Date Range Selection</h3>
+            <p>Powerful date range picker for selecting start and end dates with visual feedback.</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>🌍 Auto-Localization</h3>
+            <p>Automatically detects UI culture and provides localized text in Persian, Spanish, French, and English.</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>🎨 Customizable</h3>
+            <p>Easy to style and customize with CSS variables and custom classes.</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>⚡ Performance</h3>
+            <p>Lightweight and fast with minimal dependencies.</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>♿ Accessible</h3>
+            <p>Built with accessibility in mind, supporting keyboard navigation and screen readers.</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Quick Demo</h2>
+    <div class="demo-examples">
+        <div class="demo-example">
+            <h4>Single Date Picker</h4>
+            <SCBDatePicker @bind-Date="selectedDate" Label="Select a date" />
+            <p>Selected: <strong>@(selectedDate?.ToString("d") ?? "None")</strong></p>
+        </div>
+        
+
+    </div>
+</div>
+
+<div class="getting-started">
+    <h2>Getting Started</h2>
+    <p>Explore the different features using the navigation menu:</p>
+    <ul>
+        <li><a href="/basic">Basic DatePicker</a> - Learn the fundamentals</li>
+        <li><a href="/rangepicker">Date Range Picker</a> - Range selection capabilities</li>
+        <li><a href="/cultures">Culture & Localization</a> - Automatic culture detection and localized text</li>
+        <li><a href="/hijri">Persian Calendar</a> - Islamic calendar support</li>
+        <li><a href="/custom">Customization</a> - Styling and theming options</li>
+    </ul>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h5>Simple Setup</h5>
+            <pre class="bg-light p-3 rounded"><code>// Program.cs
+builder.Services.AddSophiChainBlazorDatePicker();
+
+// Component.razor
+&lt;SCBDatePicker @@bind-Date="selectedDate" /&gt;</code></pre>
+        </div>
+        <div class="col-md-6">
+            <h5>Automatic Features</h5>
+            <ul class="list-unstyled">
+                <li>✅ Culture detection from UI culture</li>
+                <li>✅ Localized text (Persian, Spanish, French, English)</li>
+                <li>✅ Appropriate calendar system</li>
+                <li>✅ No additional configuration needed</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime? selectedDate = DateTime.Today;
+    private DateRange? dateRange;
+
+    private string GetRangeText()
+    {
+        if (dateRange?.Start != null && dateRange?.End != null)
+        {
+            return $"{dateRange.Start.Value:d} - {dateRange.End.Value:d}";
+        }
+        return "None";
+    }
+}

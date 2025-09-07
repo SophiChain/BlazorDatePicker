@@ -1,0 +1,43 @@
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">SCBDatePicker Demo</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="basic">
+                <span class="bi bi-calendar-date" aria-hidden="true"></span> Basic DatePicker
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="rangepicker">
+                <span class="bi bi-calendar-range" aria-hidden="true"></span> Date Range Picker
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="hijri">
+                <span class="bi bi-moon-stars" aria-hidden="true"></span> Persian Calendar
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="cultures">
+                <span class="bi bi-globe" aria-hidden="true"></span> Culture & Localization
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="custom">
+                <span class="bi bi-palette" aria-hidden="true"></span> Customization
+            </NavLink>
+        </div>
+    </nav>
+</div>
+

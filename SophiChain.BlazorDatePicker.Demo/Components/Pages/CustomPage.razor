@@ -1,0 +1,99 @@
+@page "/custom"
+
+<PageTitle>Customization - SCB DatePicker Demo</PageTitle>
+
+<h1>Customization</h1>
+
+<p>This page demonstrates how to customize the SophiChain Blazor DatePicker appearance and behavior.</p>
+
+<div class="demo-section">
+    <h2>Custom Styling</h2>
+    <div class="demo-grid">
+        <div class="demo-example">
+            <h4>Primary Theme</h4>
+            <SCBDatePicker @bind-Date="primaryDate" 
+                           Label="Primary DatePicker" 
+                           Color="Color.Primary" />
+        </div>
+        
+        <div class="demo-example">
+            <h4>Success Theme</h4>
+            <SCBDatePicker @bind-Date="successDate" 
+                           Label="Success DatePicker" 
+                           Color="Color.Success" />
+        </div>
+        
+        <div class="demo-example">
+            <h4>Warning Theme</h4>
+            <SCBDatePicker @bind-Date="warningDate" 
+                           Label="Warning DatePicker" 
+                           Color="Color.Warning" />
+        </div>
+        
+        <div class="demo-example">
+            <h4>Error Theme</h4>
+            <SCBDatePicker @bind-Date="errorDate" 
+                           Label="Error DatePicker" 
+                           Color="Color.Error" />
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Custom CSS Classes</h2>
+    <div class="demo-example">
+        <h4>Custom Styled Picker</h4>
+        <SCBDatePicker @bind-Date="customDate" 
+                       Label="Custom Style" 
+                       Class="custom-picker" 
+                       Style="--scb-primary-color: #ff6b6b; --scb-theme-color: #ff6b6b;" />
+        <div class="result">
+            <strong>Selected Date:</strong> @(customDate?.ToString("F") ?? "None selected")
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime? primaryDate;
+    private DateTime? successDate;
+    private DateTime? warningDate;
+    private DateTime? errorDate;
+    private DateTime? customDate;
+}
+
+<style>
+    .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+    }
+    
+    .demo-example {
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #f9fafb;
+    }
+    
+    .result {
+        margin-top: 12px;
+        padding: 8px;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+    }
+    
+    .custom-picker {
+        --scb-border-color: #ff6b6b;
+        --scb-focus-color: #ff6b6b;
+        --scb-theme-color: #ff6b6b;
+        --scb-primary-color: #ff6b6b;
+    }
+    
+    .custom-picker .scb-input:focus {
+        border-color: var(--scb-theme-color, #ff6b6b);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+    }
+</style>

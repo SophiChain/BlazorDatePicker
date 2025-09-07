@@ -1,0 +1,329 @@
+@page "/hijri"
+@using System.Globalization
+@using SophiChain.BlazorDatePicker.Components
+@using SophiChain.BlazorDatePicker.Utilities
+
+<PageTitle>Persian Calendar - SCB DatePicker Demo</PageTitle>
+
+<h1>Persian Calendar (Iran)</h1>
+
+<p>This page demonstrates the SophiChain Blazor DatePicker's support for the Persian (Solar Hijri) calendar system used in Iran.</p>
+
+<div class="demo-section">
+    <h2>Persian Calendar (Iran)</h2>
+    <div class="demo-example">
+        <h4>Persian (fa-IR) - Solar Hijri Calendar</h4>
+        <SCBDatePicker @bind-Date="persianDate1" 
+                       Culture="persianCulture"
+                       Label="تاریخ فارسی" 
+                       Placeholder="تاریخ را انتخاب کنید..." />
+        <div class="result" dir="rtl">
+            <strong>تاریخ انتخاب شده:</strong> @GetPersianDateString(persianDate1, persianCulture)
+        </div>
+        <div class="result">
+            <strong>Gregorian Equivalent:</strong> @(persianDate1?.ToString("F") ?? "None selected")
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Persian Calendar Features</h2>
+    <div class="demo-states">
+        <div class="demo-example">
+            <h4>Different Persian Date Formats</h4>
+            <SCBDatePicker @bind-Date="persianDate2" 
+                           Culture="persianCulture"
+                           DateFormat="yyyy/MM/dd"
+                           Label="فرمت کوتاه" />
+            <div class="result" dir="rtl">
+                <strong>فرمت کوتاه:</strong> @GetPersianDateString(persianDate2, persianCulture)
+            </div>
+        </div>
+        
+        <div class="demo-example">
+            <h4>Persian Long Format</h4>
+            <SCBDatePicker @bind-Date="persianDate3" 
+                           Culture="persianCulture"
+                           DateFormat="dddd، dd MMMM yyyy"
+                           Label="فرمت بلند" />
+            <div class="result" dir="rtl">
+                <strong>فرمت بلند:</strong> @GetPersianDateString(persianDate3, persianCulture)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Persian Date Range Selection</h2>
+    <div class="demo-example">
+        <h4>Basic Persian Date Range</h4>
+        <SCBRangePicker @bind-DateRange="persianRange" 
+                        Culture="persianCulture"
+                        Label="انتخاب بازه زمانی" 
+                        Color="Color.Primary"
+                        OnApply="OnPersianRangeApplied"
+                        OnClear="OnPersianRangeCleared" />
+        
+        <div class="range-results">
+            <div class="result" dir="rtl">
+                <strong>بازه انتخاب شده:</strong> @GetPersianRangeString()
+            </div>
+            <div class="result">
+                <strong>Gregorian Equivalent:</strong> @GetGregorianRangeString()
+            </div>
+            @if (persianRange?.Start != null && persianRange?.End != null)
+            {
+                <div class="result" dir="rtl">
+                    <strong>مدت زمان:</strong> @((persianRange.End - persianRange.Start)?.Days + 1) روز
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="demo-example">
+        <h4>Persian Range with Custom Presets</h4>
+        <SCBRangePicker @bind-DateRange="persianRangeWithPresets" 
+                        Culture="persianCulture"
+                        Label="انتخاب سریع بازه" 
+                        Color="Color.Success"
+                        Presets="persianPresets"
+                        OnApply="OnPersianPresetsRangeApplied" />
+        
+        @if (persianRangeWithPresets != null)
+        {
+            <div class="result" dir="rtl">
+                <strong>بازه با پیش‌تنظیمات:</strong> @GetPersianRangeString(persianRangeWithPresets, persianCulture)
+            </div>
+        }
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Calendar Comparison</h2>
+    <div class="demo-states">
+        <div class="demo-example">
+            <h4>Gregorian Calendar</h4>
+            <SCBDatePicker @bind-Date="comparisonDate" 
+                           Culture="englishCulture"
+                           Label="Gregorian Date" />
+            <div class="result">
+                <strong>Gregorian:</strong> @(comparisonDate?.ToString("F", englishCulture) ?? "None selected")
+            </div>
+        </div>
+        
+        <div class="demo-example" dir="rtl">
+            <h4>Persian Calendar</h4>
+            <SCBDatePicker @bind-Date="comparisonDate" 
+                           Culture="persianCulture"
+                           Label="تاریخ فارسی" />
+            <div class="result">
+                <strong>فارسی:</strong> @GetPersianDateString(comparisonDate, persianCulture)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Calendar Information</h2>
+    <div class="info-panel">
+        <h4>Persian Calendar Features:</h4>
+        <ul>
+            <li>✅ Full Persian (Solar Hijri) calendar support</li>
+            <li>✅ Right-to-left (RTL) layout support</li>
+            <li>✅ Persian month and day names</li>
+            <li>✅ Proper Farsi date formatting</li>
+            <li>✅ Weekend handling (Thursday-Friday in Iran)</li>
+            <li>✅ Persian number formatting</li>
+            <li>✅ Date range selection with Persian calendar</li>
+            <li>✅ Persian presets for quick range selection</li>
+            <li>✅ Dual calendar display (Persian and Gregorian)</li>
+        </ul>
+        
+        <h4>Persian Calendar Details:</h4>
+        <div class="calendar-details">
+            <p><strong>Calendar Type:</strong> @persianCulture.Calendar.GetType().Name</p>
+            <p><strong>Era:</strong> @persianCulture.Calendar.Eras.Length era(s)</p>
+            <p><strong>First Day of Week:</strong> @persianCulture.DateTimeFormat.FirstDayOfWeek</p>
+            <p><strong>Calendar Week Rule:</strong> @persianCulture.DateTimeFormat.CalendarWeekRule</p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>Interactive Calendar Conversion</h2>
+    <div class="demo-example">
+        <h4>Real-time Calendar Conversion</h4>
+        <div class="conversion-demo">
+            <div class="conversion-input">
+                <SCBDatePicker @bind-Date="conversionDate" 
+                               Culture="englishCulture"
+                               Label="Select any date" />
+            </div>
+            
+            @if (conversionDate.HasValue)
+            {
+                <div class="conversion-results">
+                    <div class="conversion-result">
+                        <h5>Gregorian Calendar:</h5>
+                        <p>@conversionDate.Value.ToString("F", englishCulture)</p>
+                        <p class="detail">Day @conversionDate.Value.DayOfYear of year @conversionDate.Value.Year</p>
+                    </div>
+                    
+                    <div class="conversion-result" dir="rtl">
+                        <h5>تقویم فارسی:</h5>
+                        <p>@GetPersianDateString(conversionDate, persianCulture)</p>
+                        <p class="detail">
+                            روز @GetPersianDayOfYear(conversionDate.Value) از سال @GetPersianYear(conversionDate.Value)
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime? persianDate1;
+    private DateTime? persianDate2;
+    private DateTime? persianDate3;
+    private DateRange? persianRange;
+    private DateRange? persianRangeWithPresets;
+    private DateTime? comparisonDate = DateTime.Today;
+    private DateTime? conversionDate = DateTime.Today;
+    
+    private CultureInfo persianCulture = new CultureInfo("fa-IR");
+    private CultureInfo englishCulture = new CultureInfo("en-US");
+    
+    // Persian-friendly presets
+    private RangeShortcut[] persianPresets = new[]
+    {
+        RangeShortcut.Today,
+        RangeShortcut.Yesterday,
+        RangeShortcut.Last7Days,
+        RangeShortcut.Last30Days,
+        RangeShortcut.ThisWeek,
+        RangeShortcut.LastWeek,
+        RangeShortcut.ThisMonth,
+        RangeShortcut.LastMonth,
+        RangeShortcut.WeekToDate,
+        RangeShortcut.MonthToDate,
+        RangeShortcut.YearToDate,
+        RangeShortcut.Custom
+    };
+
+    protected override void OnInitialized()
+    {
+        // Ensure Persian calendar is being used
+        persianCulture.DateTimeFormat.Calendar = new System.Globalization.PersianCalendar();
+        
+        // Set Persian month names explicitly for WebAssembly
+        persianCulture.DateTimeFormat.MonthNames = new string[]
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند", ""
+        };
+        
+        // Set Persian abbreviated month names
+        persianCulture.DateTimeFormat.AbbreviatedMonthNames = new string[]
+        {
+            "فرو", "ارد", "خرد", "تیر", "مرد", "شهر",
+            "مهر", "آبان", "آذر", "دی", "بهم", "اسف", ""
+        };
+        
+        // Set Persian day names
+        persianCulture.DateTimeFormat.DayNames = new string[]
+        {
+            "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"
+        };
+        
+        // Set Persian abbreviated day names
+        persianCulture.DateTimeFormat.AbbreviatedDayNames = new string[]
+        {
+            "ی", "د", "س", "چ", "پ", "ج", "ش"
+        };
+        
+        // Set Persian culture globally for WebAssembly
+        System.Threading.Thread.CurrentThread.CurrentCulture = persianCulture;
+        System.Threading.Thread.CurrentThread.CurrentUICulture = persianCulture;
+        
+        // Also set the default culture
+        CultureInfo.DefaultThreadCurrentCulture = persianCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = persianCulture;
+    }
+
+    private string GetPersianDateString(DateTime? date, CultureInfo culture)
+    {
+        if (date == null) return "انتخاب نشده";
+        
+        try
+        {
+            return date.Value.ToString("F", culture);
+        }
+        catch
+        {
+            return date.Value.ToString("F");
+        }
+    }
+
+    private string GetPersianRangeString()
+    {
+        if (persianRange?.Start != null && persianRange?.End != null)
+        {
+            var startStr = GetPersianDateString(persianRange.Start, persianCulture);
+            var endStr = GetPersianDateString(persianRange.End, persianCulture);
+            return $"{startStr} - {endStr}";
+        }
+        return "انتخاب نشده";
+    }
+
+    private string GetGregorianRangeString()
+    {
+        if (persianRange?.Start != null && persianRange?.End != null)
+        {
+            return $"{persianRange.Start.Value:F} - {persianRange.End.Value:F}";
+        }
+        return "None selected";
+    }
+
+    private int GetPersianYear(DateTime date)
+    {
+        return persianCulture.Calendar.GetYear(date);
+    }
+
+    private int GetPersianDayOfYear(DateTime date)
+    {
+        return persianCulture.Calendar.GetDayOfYear(date);
+    }
+    
+    // Overloaded method to handle different DateRange instances
+    private string GetPersianRangeString(DateRange? range, CultureInfo culture)
+    {
+        if (range?.Start != null && range?.End != null)
+        {
+            var startStr = GetPersianDateString(range.Start, culture);
+            var endStr = GetPersianDateString(range.End, culture);
+            return $"{startStr} - {endStr}";
+        }
+        return "انتخاب نشده";
+    }
+    
+    // Event handlers for Persian range pickers
+    private void OnPersianRangeApplied(DateRange? range)
+    {
+        // Handle Persian range application
+        StateHasChanged();
+    }
+    
+    private void OnPersianRangeCleared()
+    {
+        // Handle Persian range clearing
+        persianRange = null;
+        StateHasChanged();
+    }
+    
+    private void OnPersianPresetsRangeApplied(DateRange? range)
+    {
+        // Handle Persian presets range application
+        StateHasChanged();
+    }
+}

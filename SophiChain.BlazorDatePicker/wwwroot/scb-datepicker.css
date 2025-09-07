@@ -1,0 +1,1884 @@
+/* SCB DatePicker Styles */
+
+:root {
+    --scb-primary-color: #3b82f6;
+    --scb-secondary-color: #6b7280;
+    --scb-info-color: #0ea5e9;
+    --scb-success-color: #10b981;
+    --scb-warning-color: #f59e0b;
+    --scb-error-color: #ef4444;
+    --scb-light-color: #f8fafc;
+    --scb-border-color: #d1d5db;
+    --scb-focus-color: #3b82f6;
+    --scb-hover-color: #f3f4f6;
+    --scb-text-color: #374151;
+    --scb-background-color: white;
+    --scb-disabled-background: #f9fafb;
+    --scb-disabled-text: #9ca3af;
+    --scb-range-background: #dbeafe;
+    --scb-range-text: #1e40af;
+    --scb-light-background: #f8fafc;
+    --scb-muted-text: #475569;
+    --scb-light-border: #e5e7eb;
+    --scb-dark-text: #1f2937;
+    --scb-focus-light: #60a5fa;
+    --scb-dark-background: #1f2937;
+    --scb-dark-mode-text: #f9fafb;
+}
+
+.scb-datepicker, .scb-daterangepicker {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.scb-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.scb-range-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+}
+
+.scb-input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    border: 1px solid var(--scb-border-color, #d1d5db);
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: var(--scb-background-color, white);
+    color: var(--scb-text-color, #374151);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.scb-input:focus {
+    border-color: var(--scb-theme-color, var(--scb-focus-color, #3b82f6));
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.scb-input:disabled {
+    background-color: var(--scb-disabled-background);
+    color: var(--scb-disabled-text);
+    cursor: not-allowed;
+}
+
+.scb-input.scb-range-start, .scb-input.scb-range-end {
+    width: 140px;
+}
+
+.scb-range-separator {
+    color: var(--scb-secondary-color);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.scb-label {
+    position: absolute;
+    left: 12px;
+    top: -6px;
+    background: var(--scb-background-color);
+    padding: 0 4px;
+    font-size: 12px;
+    color: var(--scb-secondary-color);
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.scb-calendar-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--scb-secondary-color);
+    transition: background-color 0.2s;
+}
+
+.scb-calendar-button:hover:not(:disabled) {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-calendar-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Popover Provider Container */
+.scb-popover-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.scb-popover-content {
+    pointer-events: auto;
+}
+
+.scb-calendar-container {
+    background: var(--scb-background-color);
+    border: 1px solid var(--scb-border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    min-width: 280px;
+}
+
+.scb-calendar-container.scb-range-calendar {
+    min-width: 580px;
+}
+
+.scb-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.scb-month-year {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.scb-month-button, .scb-year-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--scb-text-color);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.scb-month-button:hover, .scb-year-button:hover {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-nav-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--scb-secondary-color);
+    transition: background-color 0.2s, color 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scb-nav-button:hover {
+    background-color: var(--scb-hover-color);
+    color: var(--scb-text-color);
+}
+
+.scb-day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.scb-day-name {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--scb-secondary-color);
+    padding: 8px 4px;
+    text-transform: uppercase;
+}
+
+.scb-days-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.scb-day-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--scb-text-color);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scb-day-button:hover:not(:disabled) {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-day-button:disabled {
+    color: var(--scb-border-color);
+    cursor: not-allowed;
+}
+
+.scb-day-button.scb-hidden {
+    color: var(--scb-border-color);
+    pointer-events: none;
+}
+
+.scb-day-button.scb-current {
+    color: var(--scb-primary-color);
+    font-weight: 600;
+    border: 1px solid var(--scb-primary-color);
+}
+
+.scb-day-button.scb-selected {
+    background-color: var(--scb-theme-color, #3b82f6);
+    color: white;
+    font-weight: 600;
+}
+
+.scb-day-button.scb-selected:hover {
+    background-color: var(--scb-theme-color, #3b82f6);
+    filter: brightness(0.9);
+}
+
+/* Range Selection Styles */
+.scb-day-button.scb-range-between {
+    background-color: var(--scb-range-background);
+    color: var(--scb-range-text);
+}
+
+.scb-day-button.scb-range-start-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+    border-radius: 6px 0 0 6px;
+}
+
+.scb-day-button.scb-range-end-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+    border-radius: 0 6px 6px 0;
+}
+
+.scb-day-button.scb-range-selection {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--scb-range-text);
+}
+
+.scb-calendars-container {
+    display: flex;
+    gap: 24px;
+}
+
+.scb-calendar-month {
+    flex: 1;
+}
+
+.scb-range-info {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: var(--scb-info-background);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--scb-info-text);
+    font-weight: 500;
+}
+
+.scb-months-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 8px;
+}
+
+.scb-months-container .scb-month-button {
+    padding: 12px 8px;
+    border: 1px solid var(--scb-light-border);
+    border-radius: 6px;
+    background: var(--scb-background-color);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.scb-months-container .scb-month-button:hover {
+    background-color: var(--scb-hover-color);
+    border-color: var(--scb-border-color);
+}
+
+.scb-months-container .scb-month-button.scb-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+    border-color: var(--scb-primary-color);
+}
+
+.scb-years-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.scb-years-container .scb-year-button {
+    padding: 12px 8px;
+    border: 1px solid var(--scb-light-border);
+    border-radius: 6px;
+    background: var(--scb-background-color);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.scb-years-container .scb-year-button:hover {
+    background-color: var(--scb-hover-color);
+    border-color: var(--scb-border-color);
+}
+
+.scb-years-container .scb-year-button.scb-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+    border-color: var(--scb-primary-color);
+}
+
+/* RTL Support for Arabic/Hijri Calendar */
+[dir="rtl"] .scb-datepicker,
+[dir="rtl"] .scb-daterangepicker {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-calendar-button {
+    right: auto;
+    left: 8px;
+}
+
+[dir="rtl"] .scb-range-separator {
+    transform: scaleX(-1);
+}
+
+/* Enhanced RTL Support for Persian/Arabic Calendars */
+[dir="rtl"] .scb-calendar-container {
+    min-width: 320px; /* Increased width for RTL text */
+    direction: rtl;
+    font-family: 'Vazir', 'Tahoma', 'IRANSans', 'Arial', sans-serif;
+}
+
+[dir="rtl"] .scb-calendar-container.scb-range-calendar {
+    min-width: 640px; /* Increased width for RTL range calendar */
+}
+
+/* RTL Calendar Header */
+[dir="rtl"] .scb-calendar-header {
+    direction: rtl;
+    justify-content: space-between;
+}
+
+[dir="rtl"] .scb-month-year {
+    flex-direction: row-reverse;
+    gap: 12px;
+}
+
+[dir="rtl"] .scb-month-button,
+[dir="rtl"] .scb-year-button {
+    font-size: 14px;
+    padding: 6px 12px;
+    text-align: center;
+}
+
+/* RTL Day Grid - Fixed sizing for Persian/Arabic numerals */
+[dir="rtl"] .scb-day-button {
+    width: 40px;
+    height: 40px;
+    font-size: 13px;
+    min-width: 40px;
+    text-align: center;
+}
+
+[dir="rtl"] .scb-days-container {
+    display: grid;
+    grid-template-columns: repeat(7, 50px);
+    gap: 1px;
+    justify-content: center;
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 51px);
+    gap: 10px;
+    margin-bottom: 8px;
+    justify-content: flex-start;
+    direction: rtl; 
+}
+
+[dir="rtl"] .scb-day-name {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--scb-secondary-color);
+    padding: 6px 2px;
+    text-transform: none;
+    min-width: 40px;
+    direction: rtl; /* Content should be RTL */
+}
+
+/* RTL Input Fields */
+[dir="rtl"] .scb-input {
+    text-align: right;
+    direction: rtl;
+    padding: 8px 12px 8px 40px;
+}
+
+[dir="rtl"] .scb-label {
+    right: 12px;
+    left: auto;
+}
+
+[dir="rtl"] .scb-input-container .scb-calendar-button {
+    left: 8px;
+    right: auto;
+}
+
+/* RTL Month and Year Selection */
+[dir="rtl"] .scb-months-container,
+[dir="rtl"] .scb-years-container {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-months-container .scb-month-button,
+[dir="rtl"] .scb-years-container .scb-year-button {
+    text-align: center;
+    min-width: 80px;
+    direction: rtl;
+}
+
+/* RTL Range Calendar */
+[dir="rtl"] .scb-calendars-container {
+    direction: rtl;
+    gap: 20px;
+}
+
+[dir="rtl"] .scb-range-info {
+    direction: rtl;
+    text-align: center;
+}
+
+/* RTL Navigation Buttons */
+[dir="rtl"] .scb-nav-button {
+    width: 40px;
+    height: 40px;
+}
+
+/* Persian Calendar Auto-Detection Styles */
+.scb-datepicker[data-culture^="fa"],
+.scb-daterangepicker[data-culture^="fa"],
+.scb-datepicker[data-culture^="ar"],
+.scb-daterangepicker[data-culture^="ar"] {
+    direction: rtl;
+}
+
+.scb-datepicker[data-culture^="fa"] .scb-calendar-container,
+.scb-daterangepicker[data-culture^="fa"] .scb-calendar-container,
+.scb-datepicker[data-culture^="ar"] .scb-calendar-container,
+.scb-daterangepicker[data-culture^="ar"] .scb-calendar-container {
+    direction: rtl;
+    min-width: 320px;
+    font-family: 'Vazir', 'Tahoma', 'IRANSans', 'Dubai', 'Arial', sans-serif;
+}
+
+.scb-datepicker[data-culture^="fa"] .scb-calendar-container.scb-range-calendar,
+.scb-daterangepicker[data-culture^="fa"] .scb-calendar-container.scb-range-calendar,
+.scb-datepicker[data-culture^="ar"] .scb-calendar-container.scb-range-calendar,
+.scb-daterangepicker[data-culture^="ar"] .scb-calendar-container.scb-range-calendar {
+    min-width: 800px;
+}
+
+/* Additional RTL improvements */
+[dir="rtl"] .scb-day-button {
+    direction: inherit;
+}
+
+[dir="rtl"] .scb-calendar {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-calendar-range {
+    direction: rtl;
+}
+
+/* Fix for Persian number display */
+[dir="rtl"] .scb-day-button,
+[dir="rtl"] .scb-day-name,
+[dir="rtl"] .scb-month-button,
+[dir="rtl"] .scb-year-button {
+    unicode-bidi: plaintext;
+}
+
+/* Ensure proper text alignment for RTL calendars */
+[dir="rtl"] .scb-range-input-container {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-range-separator {
+    transform: scaleX(-1);
+    margin: 0 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .scb-calendar-container.scb-range-calendar {
+        min-width: 320px;
+    }
+    
+    .scb-calendars-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .scb-range-input-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .scb-input.scb-range-start,
+    .scb-input.scb-range-end {
+        width: 100%;
+    }
+}
+
+/* Focus and accessibility */
+.scb-day-button:focus,
+.scb-month-button:focus,
+.scb-year-button:focus,
+.scb-nav-button:focus {
+    outline: 2px solid var(--scb-primary-color);
+    outline-offset: 2px;
+}
+
+/* Color Theme Support */
+.scb-theme-primary {
+    --scb-theme-color: var(--scb-primary-color, #3b82f6);
+}
+
+.scb-theme-secondary {
+    --scb-theme-color: var(--scb-secondary-color, #6b7280);
+}
+
+.scb-theme-info {
+    --scb-theme-color: var(--scb-info-color, #0ea5e9);
+}
+
+.scb-theme-success {
+    --scb-theme-color: var(--scb-success-color, #10b981);
+}
+
+.scb-theme-warning {
+    --scb-theme-color: var(--scb-warning-color, #f59e0b);
+}
+
+.scb-theme-error {
+    --scb-theme-color: var(--scb-error-color, #ef4444);
+}
+
+.scb-theme-dark {
+    --scb-theme-color: var(--scb-dark-color, #f8fafc);
+}
+
+.scb-theme-default {
+    --scb-theme-color: var(--scb-primary-color, #3b82f6);
+}
+
+/* Selected Color Classes */
+.scb-selected-primary, .scb-selected-default {
+    background-color: var(--scb-primary-color, #3b82f6) !important;
+    color: white !important;
+}
+
+.scb-selected-secondary {
+    background-color: var(--scb-secondary-color, #6b7280) !important;
+    color: white !important;
+}
+
+.scb-selected-info {
+    background-color: var(--scb-info-color, #0ea5e9) !important;
+    color: white !important;
+}
+
+.scb-selected-success {
+    background-color: var(--scb-success-color, #10b981) !important;
+    color: white !important;
+}
+
+.scb-selected-warning {
+    background-color: var(--scb-warning-color, #f59e0b) !important;
+    color: white !important;
+}
+
+.scb-selected-error {
+    background-color: var(--scb-error-color, #ef4444) !important;
+    color: white !important;
+}
+
+.scb-selected-dark {
+    background-color: var(--scb-dark-color, #f8fafc) !important;
+    color: var(--scb-contrast-text) !important;
+}
+
+/* Text Colors */
+.scb-primary-text { color: var(--scb-primary-color); }
+.scb-secondary-text { color: var(--scb-secondary-color); }
+.scb-info-text { color: var(--scb-info-color); }
+.scb-success-text { color: var(--scb-success-color); }
+.scb-warning-text { color: var(--scb-warning-color); }
+.scb-error-text { color: var(--scb-error-color); }
+.scb-dark-text { color: var(--scb-contrast-text); }
+
+/* Button Outlined Variants */
+.scb-button-outlined {
+    border: 1px solid currentColor;
+    background-color: transparent;
+}
+
+.scb-button-outlined-primary { border-color: var(--scb-primary-color); }
+.scb-button-outlined-secondary { border-color: var(--scb-secondary-color); }
+.scb-button-outlined-info { border-color: var(--scb-info-color); }
+.scb-button-outlined-success { border-color: var(--scb-success-color); }
+.scb-button-outlined-warning { border-color: var(--scb-warning-color); }
+.scb-button-outlined-error { border-color: var(--scb-error-color); }
+.scb-button-outlined-dark { border-color: var(--scb-contrast-text); }
+
+/* Range Selection Colors by Theme */
+.scb-range-selection-primary:hover {
+    color: white !important;
+    background-color: var(--scb-primary-color) !important;
+}
+
+.scb-range-selection-secondary:hover {
+    color: white !important;
+    background-color: var(--scb-secondary-color) !important;
+}
+
+.scb-range-selection-info:hover {
+    color: white !important;
+    background-color: var(--scb-info-color) !important;
+}
+
+.scb-range-selection-success:hover {
+    color: white !important;
+    background-color: var(--scb-success-color) !important;
+}
+
+.scb-range-selection-warning:hover {
+    color: white !important;
+    background-color: var(--scb-warning-color) !important;
+}
+
+.scb-range-selection-error:hover {
+    color: white !important;
+    background-color: var(--scb-error-color) !important;
+}
+
+.scb-range-selection-dark:hover {
+    color: var(--scb-contrast-text) !important;
+    background-color: var(--scb-info-background) !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .scb-calendar-container {
+        background: var(--scb-info-background);
+        border-color: var(--scb-text-color);
+        color: var(--scb-light-text);
+    }
+    
+    .scb-input {
+        background-color: var(--scb-info-background);
+        border-color: var(--scb-text-color);
+        color: var(--scb-light-text);
+    }
+    
+    .scb-input:focus {
+        border-color: var(--scb-focus-light);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+    }
+    
+    .scb-day-button {
+        color: var(--scb-light-text);
+    }
+    
+    .scb-day-button:hover:not(:disabled) {
+        background-color: var(--scb-text-color);
+    }
+}
+
+/* ========================================
+   SCB Range Picker Styles
+======================================== */
+
+.scb-rangepicker-trigger {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    cursor: pointer;
+}
+
+.scb-rangepicker-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border: 2px solid var(--scb-border-color);
+    border-radius: 8px;
+    background-color: var(--scb-background-color);
+    color: var(--scb-text-color);
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 48px;
+}
+
+.scb-rangepicker-input:hover {
+    border-color: var(--scb-primary-color);
+}
+
+.scb-rangepicker-input:focus-within {
+    border-color: var(--scb-focus-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.scb-rangepicker-input.scb-disabled {
+    background-color: var(--scb-disabled-background);
+    color: var(--scb-disabled-text);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.scb-rangepicker-input.scb-readonly {
+    cursor: default;
+    background-color: var(--scb-light-background);
+}
+
+.scb-rangepicker-value {
+    flex: 1;
+}
+
+.scb-placeholder {
+    color: var(--scb-muted-text);
+    font-style: italic;
+}
+
+.scb-rangepicker-icon {
+    font-size: 16px;
+    color: var(--scb-muted-text);
+    margin-left: 8px;
+}
+
+.scb-rangepicker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.scb-rangepicker-popup {
+    background-color: var(--scb-background-color);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    min-width: fit-content;
+    overflow: auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.scb-rangepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--scb-light-border);
+}
+
+.scb-rangepicker-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--scb-dark-text);
+}
+
+.scb-close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--scb-muted-text);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scb-close-button:hover {
+    background-color: var(--scb-hover-color);
+    color: var(--scb-text-color);
+}
+
+.scb-rangepicker-content {
+    display: flex;
+    min-height: 400px;
+}
+
+.scb-rangepicker-presets {
+    width: 200px;
+    min-width: 200px;
+    padding: 20px;
+    border-right: 1px solid var(--scb-light-border);
+    background-color: var(--scb-light-background);
+}
+
+.scb-preset-section {
+    margin-bottom: 24px;
+}
+
+.scb-preset-section:last-child {
+    margin-bottom: 0;
+}
+
+.scb-preset-title {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--scb-muted-text);
+    letter-spacing: 0.5px;
+}
+
+.scb-preset-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 2px 0;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 13px;
+    color: var(--scb-text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.scb-preset-item:hover {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-preset-item.scb-preset-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+}
+
+.scb-rangepicker-main {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scb-rangepicker-inputs {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.scb-input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.scb-input-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--scb-muted-text);
+}
+
+.scb-input-group .scb-input {
+    padding: 10px 12px;
+    border: 2px solid var(--scb-border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--scb-text-color);
+    background-color: var(--scb-background-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scb-input-group .scb-input:focus {
+    outline: none;
+    border-color: var(--scb-focus-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.scb-input-separator {
+    font-size: 16px;
+    color: var(--scb-muted-text);
+    margin: 0 4px;
+    padding-top: 8px;
+}
+
+.scb-rangepicker-calendar {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.scb-calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 8px;
+}
+
+.scb-calendar-nav .scb-nav-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--scb-muted-text);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scb-calendar-nav .scb-nav-button:hover {
+    background-color: var(--scb-hover-color);
+    color: var(--scb-text-color);
+}
+
+.scb-month-headers {
+    display: flex;
+    gap: 40px;
+}
+
+.scb-month-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.scb-month-button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--scb-dark-text);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.scb-month-button:hover {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-calendars-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.scb-calendar-month {
+    display: flex;
+    flex-direction: column;
+}
+
+.scb-day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.scb-day-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--scb-muted-text);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    min-height: 24px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.scb-days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+/* Ensure consistent alignment for RTL languages */
+[dir="rtl"] .scb-day-names,
+[dir="rtl"] .scb-days-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-day-name {
+    direction: rtl;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+[dir="rtl"] .scb-day-button {
+    direction: rtl;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Specific fixes for Persian calendar */
+.scb-datepicker[data-culture^="fa"] .scb-day-names,
+.scb-daterangepicker[data-culture^="fa"] .scb-day-names {
+    direction: rtl;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.scb-datepicker[data-culture^="fa"] .scb-day-name,
+.scb-daterangepicker[data-culture^="fa"] .scb-day-name {
+    direction: rtl;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    min-height: 24px;
+}
+
+.scb-datepicker[data-culture^="fa"] .scb-days-grid,
+.scb-daterangepicker[data-culture^="fa"] .scb-days-grid {
+    direction: rtl;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.scb-day-button {
+    position: relative;
+    aspect-ratio: 1;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: var(--scb-text-color);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    min-width: 38px;
+    font-weight: 500;
+}
+
+.scb-day-button:hover {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-day-button:disabled {
+    color: var(--scb-disabled-text);
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.scb-day-button.scb-selected {
+    background-color: var(--scb-primary-color) !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.scb-day-button.scb-range-between {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: var(--scb-primary-color) !important;
+}
+
+.scb-day-button.scb-range-start-selected {
+    border-top-right-radius: 2px !important;
+    border-bottom-right-radius: 2px !important;
+}
+
+.scb-day-button.scb-range-end-selected {
+    border-top-left-radius: 2px !important;
+    border-bottom-left-radius: 2px !important;
+}
+
+.scb-day-button.scb-current {
+    position: relative;
+    font-weight: 600;
+    color: var(--scb-primary-color);
+}
+
+.scb-day-button.scb-current:not(.scb-selected)::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: var(--scb-primary-color);
+    border-radius: 50%;
+}
+
+.scb-day-button.scb-hidden {
+    color: var(--scb-disabled-text);
+    cursor: default;
+    opacity: 0.3;
+}
+
+.scb-rangepicker-info {
+    margin-bottom: 16px;
+}
+
+.scb-selection-summary {
+    padding: 12px 16px;
+    background-color: var(--scb-light-background);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--scb-text-color);
+    border: 1px solid var(--scb-light-border);
+}
+
+.scb-selection-help {
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--scb-muted-text);
+    text-align: center;
+}
+
+.scb-validation-message {
+    padding: 8px 12px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.scb-rangepicker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--scb-light-border);
+    background-color: var(--scb-light-background);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.scb-footer-left, .scb-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.scb-button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+}
+
+.scb-button-primary {
+    background-color: var(--scb-primary-color);
+    color: white;
+}
+
+.scb-button-primary:hover:not(.scb-disabled) {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.scb-button-secondary {
+    background-color: var(--scb-background-color);
+    color: var(--scb-text-color);
+    border: 2px solid var(--scb-border-color);
+}
+
+.scb-button-secondary:hover {
+    background-color: var(--scb-hover-color);
+    border-color: var(--scb-muted-text);
+}
+
+.scb-button-text {
+    background: none;
+    color: var(--scb-muted-text);
+    padding: 8px 12px;
+}
+
+.scb-button-text:hover {
+    background-color: var(--scb-hover-color);
+    color: var(--scb-text-color);
+}
+
+.scb-button.scb-disabled {
+    background-color: var(--scb-disabled-background) !important;
+    color: var(--scb-disabled-text) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scb-rangepicker-overlay {
+        padding: 10px;
+    }
+    
+    .scb-rangepicker-popup {
+        max-width: 100%;
+        max-height: 95vh;
+    }
+    
+    .scb-rangepicker-content {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .scb-rangepicker-presets {
+        width: 100%;
+        min-width: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--scb-light-border);
+        padding: 16px;
+    }
+    
+    .scb-preset-section {
+        margin-bottom: 16px;
+    }
+    
+    .scb-calendars-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .scb-month-headers {
+        gap: 20px;
+    }
+    
+    .scb-rangepicker-inputs {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .scb-input-separator {
+        display: none;
+    }
+    
+    .scb-rangepicker-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .scb-footer-left, .scb-footer-right {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .scb-rangepicker-popup {
+        border-radius: 0;
+        height: 100vh;
+        max-height: 100vh;
+    }
+    
+    .scb-calendars-grid {
+        gap: 12px;
+    }
+    
+    .scb-day-button {
+        min-height: 32px;
+        font-size: 12px;
+    }
+    
+    .scb-month-headers {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .scb-rangepicker-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .scb-rangepicker-main {
+        padding: 16px 20px;
+    }
+    
+    .scb-rangepicker-presets {
+        padding: 12px 20px;
+    }
+}
+
+/* RTL Support for Range Picker */
+[dir="rtl"] .scb-rangepicker-content {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-rangepicker-presets {
+    border-right: none;
+    border-left: 1px solid var(--scb-light-border);
+}
+
+[dir="rtl"] .scb-preset-item {
+    text-align: right;
+}
+
+[dir="rtl"] .scb-rangepicker-inputs {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-input-separator {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .scb-rangepicker-icon {
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+[dir="rtl"] .scb-calendars-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-day-names {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-days-grid {
+    direction: rtl;
+}
+
+/* Theme Variations */
+.scb-theme-primary .scb-button-primary {
+    background-color: var(--scb-primary-color);
+}
+
+.scb-theme-secondary .scb-button-primary {
+    background-color: var(--scb-secondary-color);
+}
+
+.scb-theme-success .scb-button-primary {
+    background-color: var(--scb-success-color);
+}
+
+.scb-theme-warning .scb-button-primary {
+    background-color: var(--scb-warning-color);
+}
+
+.scb-theme-error .scb-button-primary {
+    background-color: var(--scb-error-color);
+}
+
+.scb-theme-info .scb-button-primary {
+    background-color: var(--scb-info-color);
+}
+
+/* SCB DatePicker Modal Styles - Following RangePicker Pattern */
+
+/* DatePicker Trigger */
+.scb-datepicker-trigger {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    cursor: pointer;
+}
+
+.scb-datepicker-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border: 2px solid var(--scb-border-color);
+    border-radius: 8px;
+    background-color: var(--scb-background-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 48px;
+}
+
+.scb-datepicker-input:hover:not(.scb-disabled):not(.scb-readonly) {
+    border-color: var(--scb-focus-color);
+}
+
+.scb-datepicker-input:focus-within {
+    border-color: var(--scb-focus-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.scb-datepicker-input.scb-disabled {
+    background-color: var(--scb-disabled-background);
+    border-color: var(--scb-light-border);
+    cursor: not-allowed;
+}
+
+.scb-datepicker-input.scb-readonly {
+    background-color: var(--scb-light-background);
+    cursor: default;
+}
+
+.scb-datepicker-value {
+    flex: 1;
+    font-size: 14px;
+    color: var(--scb-text-color);
+}
+
+.scb-datepicker-value .scb-placeholder {
+    color: var(--scb-muted-text);
+}
+
+.scb-datepicker-icon {
+    font-size: 16px;
+    color: var(--scb-muted-text);
+    margin-left: 8px;
+}
+
+/* DatePicker Modal */
+.scb-datepicker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.scb-datepicker-popup {
+    background-color: var(--scb-background-color);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    min-width: fit-content;
+    overflow: auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.scb-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--scb-light-border);
+}
+
+.scb-datepicker-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--scb-dark-text);
+}
+
+.scb-datepicker-content {
+    display: flex;
+    min-height: 400px;
+}
+
+/* DatePicker Shortcuts Panel */
+.scb-datepicker-shortcuts {
+    width: 320px;
+    min-width: 320px;
+    padding: 20px;
+    border-right: 1px solid var(--scb-light-border);
+    background-color: var(--scb-light-background);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Year-Month Container */
+.scb-year-month-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex: 1;
+}
+
+.scb-year-column,
+.scb-month-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.scb-year-scroll,
+.scb-month-scroll {
+    max-height: 30vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    margin-right: -8px;
+}
+
+/* Custom scrollbar for year and month lists */
+.scb-year-scroll::-webkit-scrollbar,
+.scb-month-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scb-year-scroll::-webkit-scrollbar-track,
+.scb-month-scroll::-webkit-scrollbar-track {
+    background: var(--scb-light-background);
+    border-radius: 3px;
+}
+
+.scb-year-scroll::-webkit-scrollbar-thumb,
+.scb-month-scroll::-webkit-scrollbar-thumb {
+    background: var(--scb-border-color);
+    border-radius: 3px;
+}
+
+.scb-year-scroll::-webkit-scrollbar-thumb:hover,
+.scb-month-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--scb-muted-text);
+}
+
+.scb-shortcut-section {
+    margin-bottom: 0;
+}
+
+.scb-shortcut-title {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--scb-muted-text);
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.scb-shortcut-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 2px 0;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--scb-text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scb-shortcut-item:hover {
+    background-color: var(--scb-hover-color);
+}
+
+.scb-shortcut-item.scb-shortcut-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+}
+
+/* DatePicker Main Content */
+.scb-datepicker-main {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scb-datepicker-input-section {
+    margin-bottom: 20px;
+}
+
+.scb-datepicker-calendar {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.scb-calendar-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Month/Year Selection Overlays */
+.scb-months-overlay,
+.scb-years-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--scb-background-color);
+    border-radius: 8px;
+    z-index: 10;
+    padding: 16px;
+}
+
+.scb-months-container,
+.scb-years-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.scb-month-selection-button,
+.scb-year-selection-button {
+    padding: 12px 16px;
+    background: none;
+    border: 1px solid var(--scb-border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--scb-text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.scb-month-selection-button:hover,
+.scb-year-selection-button:hover {
+    background-color: var(--scb-hover-color);
+    border-color: var(--scb-focus-color);
+}
+
+.scb-month-selection-button.scb-selected,
+.scb-year-selection-button.scb-selected {
+    background-color: var(--scb-primary-color);
+    color: white;
+    border-color: var(--scb-primary-color);
+}
+
+/* DatePicker Info */
+.scb-datepicker-info {
+    margin-bottom: 16px;
+}
+
+.scb-datepicker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--scb-light-border);
+    background-color: var(--scb-light-background);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Responsive Design for DatePicker */
+@media (max-width: 768px) {
+    .scb-datepicker-overlay {
+        padding: 10px;
+    }
+    
+    .scb-datepicker-popup {
+        max-width: 100%;
+        max-height: 95vh;
+    }
+    
+    .scb-datepicker-content {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .scb-datepicker-shortcuts {
+        width: 100%;
+        min-width: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--scb-light-border);
+        padding: 16px;
+    }
+    
+    .scb-year-month-container {
+        margin-bottom: 16px;
+        flex: none;
+    }
+    
+    .scb-year-scroll,
+    .scb-month-scroll {
+        max-height: 200px;
+    }
+    
+    .scb-shortcut-section {
+        margin-bottom: 16px;
+    }
+    
+    .scb-datepicker-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .scb-footer-left, .scb-footer-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .scb-months-container,
+    .scb-years-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .scb-day-button {
+        min-height: 36px;
+        min-width: 36px;
+        font-size: 13px;
+    }
+    
+    .scb-day-name {
+        font-size: 10px;
+        min-height: 22px;
+        padding: 4px 2px;
+    }
+}
+
+/* Additional Rounded Corner Rules */
+.scb-month-display {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--scb-dark-text);
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+.scb-calendar-grid {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.scb-datepicker-input-section {
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.scb-selection-summary {
+    border-radius: 8px;
+}
+
+.scb-selection-help {
+    border-radius: 6px;
+}
+
+/* Ensure all interactive elements have rounded corners */
+* {
+    box-sizing: border-box;
+}
+
+.scb-datepicker-popup * {
+    border-radius: inherit;
+}
+
+/* Specific rounded corner overrides */
+.scb-datepicker-content {
+    border-radius: 0 0 12px 12px;
+}
+
+.scb-datepicker-header {
+    border-radius: 12px 12px 0 0;
+}
+
+.scb-year-month-container {
+    border-radius: 8px;
+}
+
+.scb-year-column,
+.scb-month-column {
+    border-radius: 6px;
+}
+
+.scb-year-scroll,
+.scb-month-scroll {
+    border-radius: 6px;
+}
+
+.scb-calendar-nav {
+    border-radius: 8px;
+}
+
+.scb-month-headers {
+    border-radius: 6px;
+}
+
+.scb-month-header {
+    border-radius: 6px;
+}

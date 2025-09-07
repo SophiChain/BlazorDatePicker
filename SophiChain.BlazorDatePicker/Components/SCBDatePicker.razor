@@ -1,0 +1,574 @@
+@using SophiChain.BlazorDatePicker.Extensions
+@using Microsoft.JSInterop
+@using System.Linq
+@inherits SCBBaseDatePicker
+@namespace SophiChain.BlazorDatePicker.Components
+@implements IAsyncDisposable
+
+<!-- Trigger Input -->
+<div class="scb-datepicker-trigger" @onclick="ShowAsync" @attributes="UserAttributes">
+    <div class="scb-datepicker-input @(Disabled ? "scb-disabled" : "") @(ReadOnly ? "scb-readonly" : "")" style="@Style">
+        <span class="scb-datepicker-value">
+            @if (HighlightedDate != null)
+            {
+                <span>@HighlightedDate.Value.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture)</span>
+            }
+            else
+            {
+                <span class="scb-placeholder">@Placeholder</span>
+            }
+        </span>
+        <span class="scb-datepicker-icon">📅</span>
+    </div>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="scb-label">@Label</label>
+    }
+</div>
+
+<!-- Date Picker Popup -->
+@if (_showPicker)
+{
+    <div class="scb-datepicker-overlay" @onclick="CancelAsync">
+        <div class="scb-datepicker-popup @Class" dir="@GetTextDirection()" data-culture="@Culture.Name" @onclick:stopPropagation="true">
+            
+            <!-- Header -->
+            <div class="scb-datepicker-header">
+                <h4>@Localizer.SelectDate</h4>
+                <button type="button" class="scb-close-button" @onclick="CancelAsync" aria-label="@Localizer.Close">×</button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="scb-datepicker-content">
+                
+                <!-- Left Column: Quick Select Shortcuts -->
+                <div class="scb-datepicker-shortcuts">
+                    
+                    <!-- Years and Months Side by Side -->
+                    <div class="scb-year-month-container">
+                        <!-- Quick Years -->
+                        <div class="scb-year-column">
+                            <h5 class="scb-shortcut-title">@Localizer.Years</h5>
+                            <div class="scb-year-scroll">
+                                @foreach (var year in GetAllYears())
+                                {
+                                    <button type="button" 
+                                            id="year-@year"
+                                            class="scb-shortcut-item @(IsYearSelected(year) ? "scb-shortcut-selected" : "")"
+                                            @onclick="(() => SelectQuickYear(year))">
+                                        @year
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Quick Months -->
+                        <div class="scb-month-column">
+                            <h5 class="scb-shortcut-title">@Localizer.Months</h5>
+                            <div class="scb-month-scroll">
+                                @for (int month = 1; month <= 12; month++)
+                                {
+                                    var monthIndex = month;
+                                    <button type="button" 
+                                            id="month-@monthIndex"
+                                            class="scb-shortcut-item @(IsMonthSelected(monthIndex) ? "scb-shortcut-selected" : "")"
+                                            @onclick="(() => SelectQuickMonth(monthIndex))">
+                                        @Culture.DateTimeFormat.MonthNames[month - 1]
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Dates -->
+                    <div class="scb-shortcut-section">
+                        <h5 class="scb-shortcut-title">@Localizer.QuickSelect</h5>
+                        <button type="button" 
+                                class="scb-shortcut-item @(IsDateSelected(DateTime.Today) ? "scb-shortcut-selected" : "")"
+                                @onclick="(() => SelectDate(DateTime.Today))">
+                            @Localizer.Today
+                        </button>
+                        <button type="button" 
+                                class="scb-shortcut-item @(IsDateSelected(DateTime.Today.AddDays(-1)) ? "scb-shortcut-selected" : "")"
+                                @onclick="(() => SelectDate(DateTime.Today.AddDays(-1)))">
+                            @Localizer.Yesterday
+                        </button>
+                        <button type="button" 
+                                class="scb-shortcut-item @(IsDateSelected(DateTime.Today.AddDays(1)) ? "scb-shortcut-selected" : "")"
+                                @onclick="(() => SelectDate(DateTime.Today.AddDays(1)))">
+                            @Localizer.Tomorrow
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Input and Calendar -->
+                <div class="scb-datepicker-main">
+                    
+                    <!-- Date Input -->
+                    <div class="scb-datepicker-input-section">
+                        <div class="scb-input-group">
+                            <label for="date-input">@Localizer.SelectedDate</label>
+                            <input type="text" 
+                                   id="date-input"
+                                   class="scb-input" 
+                                   placeholder="@Placeholder" 
+                                   value="@GetDateText()" 
+                                   @onchange="OnDateTextChanged" />
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="scb-datepicker-calendar" dir="@GetTextDirection()">
+                        
+                        <!-- Calendar Navigation -->
+                        <div class="scb-calendar-nav">
+                            <button type="button" class="scb-nav-button" @onclick="PreviousMonth" aria-label="@Localizer.PreviousMonth">❮</button>
+                            <div class="scb-month-headers">
+                                <div class="scb-month-header">
+                                    <span class="scb-month-display">
+                                        @GetMonthName() @GetYear()
+                                    </span>
+                                </div>
+                            </div>
+                            <button type="button" class="scb-nav-button" @onclick="NextMonth" aria-label="@Localizer.NextMonth">❯</button>
+                        </div>
+
+                        <!-- Single Calendar -->
+                        <div class="scb-calendar-grid">
+                            <div class="scb-calendar-month">
+                                
+                                <!-- Day Names Header -->
+                                <div class="scb-day-names">
+                                    @foreach (var dayName in GetAbbreviatedDayNames())
+                                    {
+                                        <div class="scb-day-name">@dayName</div>
+                                    }
+                                </div>
+
+                                <!-- Calendar Days -->
+                                <div class="scb-days-grid">
+                                    @for (int week = 0; week < 6; week++)
+                                    {
+                                        @foreach (var day in GetWeek(0, week))
+                                        {
+                                            <button type="button" 
+                                                    class="scb-day-button @GetDayClasses(0, day)"
+                                                    @onclick="(() => HandleDayClick(day))"
+                                                    disabled="@IsDayDisabled(day)"
+                                                    aria-label="@day.ToString("D", Culture)">
+                                                @Culture.Calendar.GetDayOfMonth(day)
+                                            </button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Month/Year Selection Views -->
+                        @if (CurrentView == OpenTo.Month)
+                        {
+                            <div class="scb-months-overlay">
+                                <div class="scb-months-container">
+                                    @for (int month = 1; month <= 12; month++)
+                                    {
+                                        var monthDate = new DateTime(GetYear(), month, 1, Culture.Calendar);
+                                        <button type="button" 
+                                                class="scb-month-selection-button @GetMonthClasses(monthDate)"
+                                                @onclick="(() => SelectMonth(month))">
+                                            @Culture.DateTimeFormat.MonthNames[month - 1]
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else if (CurrentView == OpenTo.Year)
+                        {
+                            <div class="scb-years-overlay">
+                                <div class="scb-years-container">
+                                    @for (int year = GetMinYear(); year <= GetMaxYear(); year++)
+                                    {
+                                        <button type="button" 
+                                                class="scb-year-selection-button @GetYearClasses(year)"
+                                                @onclick="(() => SelectYear(year))">
+                                            @year
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Selection Info -->
+                    <div class="scb-datepicker-info">
+                        @if (HighlightedDate != null)
+                        {
+                            <div class="scb-selection-summary">
+                                <strong>@Localizer.Selected</strong> 
+                                @HighlightedDate.Value.ToString("D", Culture)
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="scb-selection-help">
+                                <em>@Localizer.SelectDateFromCalendar</em>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="scb-datepicker-footer">
+                <div class="scb-footer-left">
+                    @if (ShowClear && HighlightedDate != null)
+                    {
+                        <button type="button" class="scb-button scb-button-text" @onclick="ClearAsync">
+                            @Localizer.Clear
+                        </button>
+                    }
+                </div>
+                <div class="scb-footer-right">
+                    <button type="button" class="scb-button scb-button-secondary" @onclick="CancelAsync">
+                        @Localizer.Cancel
+                    </button>
+                    <button type="button" 
+                            class="scb-button scb-button-primary @(!HasValidDate() ? "scb-disabled" : "")" 
+                            @onclick="ApplyAsync"
+                            disabled="@(!HasValidDate())">
+                        @Localizer.Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool _showPicker = false;
+    private DateTime? _previewDate;
+
+    protected async Task ShowAsync()
+    {
+        if (!Disabled && !ReadOnly)
+        {
+            _showPicker = true;
+            _previewDate = HighlightedDate;
+            PreviewDate = _previewDate; // Sync with the base class property
+            CurrentView = OpenTo.Date;
+            StateHasChanged();
+            
+            // Scroll to selected year and month after the component has rendered
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(150); // Give time for DOM to render
+                await ScrollToSelectedYearAndMonth();
+            });
+        }
+    }
+
+    protected async Task ScrollToSelectedYearAndMonth()
+    {
+        try
+        {
+            var selectedDate = _previewDate ?? HighlightedDate ?? DateTime.Today;
+            var selectedYear = Culture.Calendar.GetYear(selectedDate);
+            var selectedMonth = Culture.Calendar.GetMonth(selectedDate);
+            
+            await JsApiService.ScrollToYear(selectedYear);
+            await JsApiService.ScrollToMonth(selectedMonth);
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't fail the operation
+            Console.WriteLine($"Error scrolling to selected year/month: {ex.Message}");
+        }
+    }
+
+    protected async Task CancelAsync()
+    {
+        _showPicker = false;
+        _previewDate = null;
+        PreviewDate = _previewDate; // Sync with base class property
+        StateHasChanged();
+    }
+
+    protected async Task ApplyAsync()
+    {
+        if (HasValidDate() && _previewDate != null)
+        {
+            await SetDateAsync(_previewDate.Value);
+        }
+        _showPicker = false;
+        StateHasChanged();
+    }
+
+    protected async Task ClearAsync()
+    {
+        await SetDateAsync(null);
+        _previewDate = null;
+        PreviewDate = _previewDate; // Sync with base class property
+        _showPicker = false;
+        StateHasChanged();
+    }
+
+    protected bool HasValidDate()
+    {
+        return _previewDate != null && (!MinDate.HasValue || _previewDate >= MinDate) && 
+               (!MaxDate.HasValue || _previewDate <= MaxDate);
+    }
+
+    protected string? GetDateText()
+    {
+        return _previewDate?.ToString(DateFormat ?? Culture.DateTimeFormat.ShortDatePattern, Culture);
+    }
+
+    protected async Task OnDateTextChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        
+        if (DateTime.TryParse(value, Culture, out var date))
+        {
+            _previewDate = date;
+            PreviewDate = _previewDate; // Sync with base class property
+            PickerMonth = date.StartOfMonth(Culture);
+            await PickerMonthChanged.InvokeAsync(PickerMonth);
+        }
+        StateHasChanged();
+    }
+
+    // Quick selection methods
+    protected IEnumerable<int> GetAllYears()
+    {
+        var currentDate = DateTime.Today;
+        var currentYear = Culture.Calendar.GetYear(currentDate);
+        return Enumerable.Range(currentYear - 100, 201); // 100 years before to 100 years after
+    }
+
+    protected void SelectQuickYear(int year)
+    {
+        var currentDate = _previewDate ?? DateTime.Today;
+        var currentMonth = Culture.Calendar.GetMonth(currentDate);
+        var currentDay = Culture.Calendar.GetDayOfMonth(currentDate);
+        
+        // Get the maximum day for the selected year and month in the culture's calendar
+        var maxDay = Culture.Calendar.GetDaysInMonth(year, currentMonth);
+        var day = Math.Min(currentDay, maxDay);
+        
+        _previewDate = new DateTime(year, currentMonth, day, Culture.Calendar);
+        PreviewDate = _previewDate; // Sync with base class property
+        PickerMonth = _previewDate.Value.StartOfMonth(Culture);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+        StateHasChanged();
+    }
+
+    protected void SelectQuickMonth(int month)
+    {
+        var currentDate = _previewDate ?? DateTime.Today;
+        var year = Culture.Calendar.GetYear(currentDate);
+        var currentDay = Culture.Calendar.GetDayOfMonth(currentDate);
+        
+        // Get the maximum day for the selected month and year in the culture's calendar
+        var maxDay = Culture.Calendar.GetDaysInMonth(year, month);
+        var day = Math.Min(currentDay, maxDay);
+        
+        _previewDate = new DateTime(year, month, day, Culture.Calendar);
+        PreviewDate = _previewDate; // Sync with base class property
+        PickerMonth = _previewDate.Value.StartOfMonth(Culture);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+        StateHasChanged();
+    }
+
+    protected void SelectDate(DateTime date)
+    {
+        _previewDate = date;
+        PreviewDate = _previewDate; // Sync with base class property
+        PickerMonth = date.StartOfMonth(Culture);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+        StateHasChanged();
+    }
+
+    // Override the GetPreviewDate method to return the actual preview date
+    private DateTime? GetPreviewDate()
+    {
+        return _previewDate;
+    }
+
+    protected bool IsYearSelected(int year)
+    {
+        return _previewDate != null && Culture.Calendar.GetYear(_previewDate.Value) == year;
+    }
+
+    protected bool IsMonthSelected(int month)
+    {
+        return _previewDate != null && Culture.Calendar.GetMonth(_previewDate.Value) == month;
+    }
+
+    protected bool IsDateSelected(DateTime date)
+    {
+        return _previewDate?.Date == date.Date;
+    }
+
+    private async Task HandleDayClick(DateTime dateTime)
+    {
+        _previewDate = dateTime;
+        PreviewDate = _previewDate; // Sync with base class property
+        await OnDayClickedAsync(dateTime);
+        StateHasChanged();
+    }
+
+    protected void PreviousMonth()
+    {
+        var currentMonth = PickerMonth ?? DateTime.Today.StartOfMonth(Culture);
+        PickerMonth = currentMonth.AddMonths(-1);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+    }
+
+    protected void NextMonth()
+    {
+        var currentMonth = PickerMonth ?? DateTime.Today.StartOfMonth(Culture);
+        PickerMonth = currentMonth.AddMonths(1);
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+    }
+
+    protected void ShowMonthView()
+    {
+        CurrentView = OpenTo.Month;
+    }
+
+    protected void ShowYearView()
+    {
+        CurrentView = OpenTo.Year;
+    }
+
+    protected void SelectMonth(int month)
+    {
+        var currentDate = PickerMonth ?? DateTime.Today;
+        var year = Culture.Calendar.GetYear(currentDate);
+        var currentDay = _previewDate != null ? Culture.Calendar.GetDayOfMonth(_previewDate.Value) : Culture.Calendar.GetDayOfMonth(DateTime.Today);
+        
+        // Get the maximum day for the selected month and year in the culture's calendar
+        var maxDay = Culture.Calendar.GetDaysInMonth(year, month);
+        var day = Math.Min(currentDay, maxDay);
+        
+        _previewDate = new DateTime(year, month, day, Culture.Calendar);
+        PreviewDate = _previewDate; // Sync with base class property
+        PickerMonth = new DateTime(year, month, 1, Culture.Calendar);
+        CurrentView = OpenTo.Date;
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+        StateHasChanged();
+    }
+
+    protected void SelectYear(int year)
+    {
+        var currentDate = PickerMonth ?? DateTime.Today;
+        var month = Culture.Calendar.GetMonth(currentDate);
+        var currentDay = _previewDate != null ? Culture.Calendar.GetDayOfMonth(_previewDate.Value) : Culture.Calendar.GetDayOfMonth(DateTime.Today);
+        
+        // Get the maximum day for the selected year and month in the culture's calendar
+        var maxDay = Culture.Calendar.GetDaysInMonth(year, month);
+        var day = Math.Min(currentDay, maxDay);
+        
+        _previewDate = new DateTime(year, month, day, Culture.Calendar);
+        PreviewDate = _previewDate; // Sync with base class property
+        PickerMonth = new DateTime(year, month, 1, Culture.Calendar);
+        CurrentView = OpenTo.Month;
+        PickerMonthChanged.InvokeAsync(PickerMonth);
+        StateHasChanged();
+    }
+
+    protected string GetMonthName()
+    {
+        var date = PickerMonth ?? DateTime.Today;
+        return Culture.DateTimeFormat.MonthNames[Culture.Calendar.GetMonth(date) - 1];
+    }
+
+    protected int GetYear()
+    {
+        var date = PickerMonth ?? DateTime.Today;
+        return Culture.Calendar.GetYear(date);
+    }
+
+    protected IEnumerable<string> GetAbbreviatedDayNames()
+    {
+        var dayNamesNormal = Culture.DateTimeFormat.AbbreviatedDayNames;
+        var firstDay = (int)GetFirstDayOfWeek();
+        var dayNamesShifted = new string[7];
+        
+        // For RTL cultures, we need to ensure proper alignment
+        var isRtl = Culture.TextInfo.IsRightToLeft;
+        var isPersian = Culture.Name.StartsWith("fa", StringComparison.OrdinalIgnoreCase);
+        
+        for (int i = 0; i < 7; i++)
+        {
+            dayNamesShifted[i] = dayNamesNormal[(firstDay + i) % 7];
+        }
+        
+        // For RTL languages, we need to handle the layout properly
+        if (isRtl)
+        {
+            // For Persian calendar, ensure the days start from Saturday on the right
+            if (isPersian)
+            {
+                // Persian week starts with Saturday, ensure proper RTL display
+                // Don't reverse if first day is already Saturday (6), just return as-is for RTL
+                return dayNamesShifted;
+            }
+            else
+            {
+                // For other RTL languages (like Arabic), reverse the array
+                return dayNamesShifted.Reverse();
+            }
+        }
+        
+        return dayNamesShifted;
+    }
+
+    protected string GetMonthClasses(DateTime month)
+    {
+        var selectedMonth = _previewDate ?? HighlightedDate ?? (PickerMonth ?? DateTime.Today);
+        
+        if (Culture.Calendar.GetYear(month) != Culture.Calendar.GetYear(selectedMonth))
+            return "";
+
+        if (Culture.Calendar.GetMonth(month) == Culture.Calendar.GetMonth(selectedMonth))
+            return $"scb-selected {GetSelectedColorClass()}";
+
+        return "";
+    }
+
+    protected string GetYearClasses(int year)
+    {
+        var selectedYear = _previewDate ?? HighlightedDate ?? (PickerMonth ?? DateTime.Today);
+
+        if (year == Culture.Calendar.GetYear(selectedYear))
+            return $"scb-selected {GetSelectedColorClass()}";
+
+        return "";
+    }
+
+    protected int GetMinYear()
+    {
+        if (MinDate.HasValue)
+            return Culture.Calendar.GetYear(MinDate.Value);
+        return Culture.Calendar.GetYear(DateTime.Today) - 100;
+    }
+
+    protected int GetMaxYear()
+    {
+        if (MaxDate.HasValue)
+            return Culture.Calendar.GetYear(MaxDate.Value);
+        return Culture.Calendar.GetYear(DateTime.Today) + 100;
+    }
+
+    protected string GetTextDirection()
+    {
+        // Persian, Arabic, Hebrew, and other RTL cultures
+        return Culture.Name.StartsWith("fa") || Culture.Name.StartsWith("ar") || Culture.Name.StartsWith("he") || 
+               Culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        // Clean up resources if needed
+    }
+}
