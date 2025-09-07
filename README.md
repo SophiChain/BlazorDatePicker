@@ -195,71 +195,336 @@ services.AddSophiChainBlazorDatePickerWithCustomLocalizer<MyCustomLocalizer>();
 services.AddSophiChainBlazorDatePickerEnglishOnly();
 ```
 
-## 📅 Range Shortcuts (Presets)
+## 📅 RangeShortcut Documentation
 
-The Range Picker includes **30+ predefined shortcuts** for quick date selection:
+The `SCBRangePicker` provides powerful preset functionality through the `RangeShortcut` enum, offering 30+ predefined date ranges for quick selection.
 
-### Built-in Shortcuts
-- **Relative**: Today, Yesterday, Last 7/30/90 Days
-- **Periods**: This Week/Month/Quarter/Year, Last Week/Month/Quarter/Year  
-- **Business**: Previous Business Week/Month, Week/Month/Quarter to Date
-- **Future**: Next 7/30 Days, Next Week/Month/Quarter/Year
-- **Custom**: Manual date selection
+### Available RangeShortcut Values
 
-### Custom Preset Arrays
+| Shortcut | Description | Example Range |
+|----------|-------------|---------------|
+| **Relative Shortcuts** |||
+| `Today` | Today only | Dec 15, 2023 - Dec 15, 2023 |
+| `Yesterday` | Yesterday only | Dec 14, 2023 - Dec 14, 2023 |
+| `Last7Days` | Last 7 days including today | Dec 9, 2023 - Dec 15, 2023 |
+| `Last14Days` | Last 14 days including today | Dec 2, 2023 - Dec 15, 2023 |
+| `Last30Days` | Last 30 days including today | Nov 16, 2023 - Dec 15, 2023 |
+| `Last60Days` | Last 60 days including today | Oct 17, 2023 - Dec 15, 2023 |
+| `Last90Days` | Last 90 days including today | Sep 17, 2023 - Dec 15, 2023 |
+| **Period Shortcuts** |||
+| `LastWeek` | Previous week (Mon-Sun or culture-specific) | Dec 4, 2023 - Dec 10, 2023 |
+| `LastMonth` | Previous complete month | Nov 1, 2023 - Nov 30, 2023 |
+| `LastQuarter` | Previous complete quarter | Jul 1, 2023 - Sep 30, 2023 |
+| `LastYear` | Previous complete year | Jan 1, 2022 - Dec 31, 2022 |
+| `ThisWeek` | Current week | Dec 11, 2023 - Dec 17, 2023 |
+| `ThisMonth` | Current complete month | Dec 1, 2023 - Dec 31, 2023 |
+| `ThisQuarter` | Current complete quarter | Oct 1, 2023 - Dec 31, 2023 |
+| `ThisYear` | Current complete year | Jan 1, 2023 - Dec 31, 2023 |
+| **To-Date Shortcuts** |||
+| `WeekToDate` | Start of current week to today | Dec 11, 2023 - Dec 15, 2023 |
+| `MonthToDate` | Start of current month to today | Dec 1, 2023 - Dec 15, 2023 |
+| `QuarterToDate` | Start of current quarter to today | Oct 1, 2023 - Dec 15, 2023 |
+| `YearToDate` | Start of current year to today | Jan 1, 2023 - Dec 15, 2023 |
+| **Rolling Shortcuts** |||
+| `Rolling7Days` | 7 days ago to today | Dec 8, 2023 - Dec 15, 2023 |
+| `Rolling30Days` | 30 days ago to today | Nov 15, 2023 - Dec 15, 2023 |
+| `Rolling90Days` | 90 days ago to today | Sep 16, 2023 - Dec 15, 2023 |
+| **Future Shortcuts** |||
+| `Next7Days` | Today to 7 days from today | Dec 15, 2023 - Dec 22, 2023 |
+| `Next14Days` | Today to 14 days from today | Dec 15, 2023 - Dec 29, 2023 |
+| `Next30Days` | Today to 30 days from today | Dec 15, 2023 - Jan 14, 2024 |
+| `Next90Days` | Today to 90 days from today | Dec 15, 2023 - Mar 14, 2024 |
+| `NextWeek` | Next complete week | Dec 18, 2023 - Dec 24, 2023 |
+| `NextMonth` | Next complete month | Jan 1, 2024 - Jan 31, 2024 |
+| `NextQuarter` | Next complete quarter | Jan 1, 2024 - Mar 31, 2024 |
+| `NextYear` | Next complete year | Jan 1, 2024 - Dec 31, 2024 |
+| **Business Shortcuts** |||
+| `PreviousBusinessWeek` | Previous Monday-Friday | Dec 4, 2023 - Dec 8, 2023 |
+| `PreviousBusinessMonth` | Previous complete month (simplified) | Nov 1, 2023 - Nov 30, 2023 |
+| **Special Shortcuts** |||
+| `AllTime` | Maximum possible date range | Min supported - Max supported |
+| `Custom` | Manual selection mode | User-defined range |
+
+### Basic Usage
+
 ```razor
-<!-- Use specific presets for business scenarios -->
-<SCBRangePicker Presets="businessPresets" />
+<!-- Default presets (automatically filtered based on constraints) -->
+<SCBRangePicker @bind-DateRange="dateRange" 
+                Label="Select date range" />
+
+<!-- All available presets -->
+<SCBRangePicker @bind-DateRange="dateRange" 
+                Presets="GetAllPresets()" />
 
 @code {
+    private DateRange? dateRange;
+    
+    private RangeShortcut[] GetAllPresets() => Enum.GetValues<RangeShortcut>();
+}
+```
+
+### Custom Preset Arrays
+
+Create specific preset combinations for different scenarios:
+
+```razor
+<!-- Business scenario presets -->
+<SCBRangePicker @bind-DateRange="businessRange" 
+                Presets="businessPresets"
+                Label="Business Reports" />
+
+<!-- Analytics scenario presets -->
+<SCBRangePicker @bind-DateRange="analyticsRange" 
+                Presets="analyticsPresets"
+                Label="Analytics Period" />
+
+<!-- Planning scenario presets -->
+<SCBRangePicker @bind-DateRange="planningRange" 
+                Presets="planningPresets"
+                PastOnly="false"
+                Label="Planning Period" />
+
+@code {
+    private DateRange? businessRange, analyticsRange, planningRange;
+    
+    // Business reporting presets
     private RangeShortcut[] businessPresets = new[]
     {
         RangeShortcut.Today,
+        RangeShortcut.Yesterday,
         RangeShortcut.ThisWeek,
         RangeShortcut.LastWeek,
         RangeShortcut.MonthToDate,
         RangeShortcut.LastMonth,
-        RangeShortcut.Custom // Always include for manual selection
+        RangeShortcut.QuarterToDate,
+        RangeShortcut.LastQuarter,
+        RangeShortcut.YearToDate,
+        RangeShortcut.PreviousBusinessWeek,
+        RangeShortcut.PreviousBusinessMonth,
+        RangeShortcut.Custom
+    };
+    
+    // Analytics presets
+    private RangeShortcut[] analyticsPresets = new[]
+    {
+        RangeShortcut.Last7Days,
+        RangeShortcut.Last30Days,
+        RangeShortcut.Last90Days,
+        RangeShortcut.Rolling7Days,
+        RangeShortcut.Rolling30Days,
+        RangeShortcut.Rolling90Days,
+        RangeShortcut.MonthToDate,
+        RangeShortcut.QuarterToDate,
+        RangeShortcut.YearToDate,
+        RangeShortcut.Custom
+    };
+    
+    // Planning presets (future-focused)
+    private RangeShortcut[] planningPresets = new[]
+    {
+        RangeShortcut.Today,
+        RangeShortcut.Next7Days,
+        RangeShortcut.Next30Days,
+        RangeShortcut.NextWeek,
+        RangeShortcut.NextMonth,
+        RangeShortcut.NextQuarter,
+        RangeShortcut.ThisWeek,
+        RangeShortcut.ThisMonth,
+        RangeShortcut.ThisQuarter,
+        RangeShortcut.Custom
     };
 }
 ```
 
 ### Smart Filtering
-- **PastOnly**: Automatically hides future-related shortcuts
-- **FutureOnly**: Automatically hides past-related shortcuts
-- **Constraints**: Respects MinDays/MaxDays limits
 
-## 🎨 Customization
+The component automatically filters presets based on your constraints:
 
-### Component Properties
+```razor
+<!-- Past-only filtering: hides all future presets -->
+<SCBRangePicker @bind-DateRange="pastRange" 
+                PastOnly="true"
+                Label="Historical Data" />
 
-#### SCBDatePicker Properties
+<!-- Future-only filtering: hides all past presets -->
+<SCBRangePicker @bind-DateRange="futureRange" 
+                FutureOnly="true"
+                Label="Upcoming Events" />
+
+<!-- Constraint-based filtering: hides presets that exceed limits -->
+<SCBRangePicker @bind-DateRange="limitedRange" 
+                MinDays="1"
+                MaxDays="7"
+                Label="Short Periods Only" />
+
+@code {
+    private DateRange? pastRange, futureRange, limitedRange;
+}
+```
+
+### Working with Selected Presets
+
+```razor
+<SCBRangePicker @bind-DateRange="dateRange" 
+                OnPreviewChange="OnRangePreview"
+                OnApply="OnRangeApplied" />
+
+<div class="selected-info">
+    @if (selectedPreset.HasValue)
+    {
+        <p>Selected Preset: <strong>@selectedPreset.Value</strong></p>
+    }
+    
+    @if (dateRange is { Start: not null, End: not null })
+    {
+        <p>Range: @dateRange.Start.Value.ToString("d") - @dateRange.End.Value.ToString("d")</p>
+        <p>Duration: @((dateRange.End.Value - dateRange.Start.Value).Days + 1) days</p>
+    }
+</div>
+
+@code {
+    private DateRange? dateRange;
+    private RangeShortcut? selectedPreset;
+    
+    private async Task OnRangePreview(DateRange? range)
+    {
+        // Get the preset that matches this range (if any)
+        selectedPreset = GetPresetForRange(range);
+        StateHasChanged();
+    }
+    
+    private async Task OnRangeApplied(DateRange? range)
+    {
+        Console.WriteLine($"Applied range: {range?.Start:d} - {range?.End:d}");
+        if (selectedPreset.HasValue)
+        {
+            Console.WriteLine($"Using preset: {selectedPreset.Value}");
+        }
+    }
+    
+    private RangeShortcut? GetPresetForRange(DateRange? range)
+    {
+        if (range?.Start == null || range?.End == null) return null;
+        
+        // This is a simplified example - the actual component does this internally
+        var today = DateTime.Today;
+        
+        return range switch
+        {
+            var r when r.Start == today && r.End == today => RangeShortcut.Today,
+            var r when r.Start == today.AddDays(-1) && r.End == today.AddDays(-1) => RangeShortcut.Yesterday,
+            var r when r.Start == today.AddDays(-6) && r.End == today => RangeShortcut.Last7Days,
+            _ => RangeShortcut.Custom
+        };
+    }
+}
+```
+
+## 📋 Component Properties
+
+### SCBDatePicker Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
+| **Basic Properties** ||||
 | `Date` | `DateTime?` | `null` | Two-way bound selected date |
-| `Label` | `string` | `""` | Label text displayed above the picker |
-| `Placeholder` | `string` | `"Select date"` | Placeholder text when no date selected |
+| `Label` | `string?` | `null` | Label text displayed above the picker |
+| `Placeholder` | `string?` | `null` | Placeholder text when no date selected |
 | `Culture` | `CultureInfo` | `Current UI Culture` | Culture for calendar system and formatting |
-| `DateFormat` | `string` | Culture default | Custom date format string |
+| `DateFormat` | `string?` | Culture default | Custom date format string |
 | `Disabled` | `bool` | `false` | Whether the picker is disabled |
 | `ReadOnly` | `bool` | `false` | Whether the picker is read-only |
-| `Class` | `string` | `""` | Additional CSS classes |
-| `Style` | `string` | `""` | Inline CSS styles |
+| `Class` | `string?` | `null` | Additional CSS classes |
+| `Style` | `string?` | `null` | Inline CSS styles |
+| `ShowClear` | `bool` | `true` | Whether to show the Clear button |
+| **Date Constraints** ||||
+| `MinDate` | `DateTime?` | `null` | The minimum selectable date |
+| `MaxDate` | `DateTime?` | `null` | The maximum selectable date |
+| **Display Options** ||||
+| `OpenTo` | `OpenTo` | `Date` | Initial view to display (Date, Month, Year) |
+| `Color` | `Color` | `Primary` | Color theme (Primary, Secondary, Success, Warning, Error, etc.) |
+| `Variant` | `Variant` | `Filled` | Display variant (Text, Filled, Outlined) |
+| `PickerVariant` | `PickerVariant` | `Inline` | Picker behavior (Inline, Dialog, Static) |
+| `FirstDayOfWeek` | `DayOfWeek?` | Culture default | First day of the week |
+| `TitleDateFormat` | `string` | `"ddd, dd MMM"` | Format for date in the title |
+| `ShowWeekNumbers` | `bool` | `false` | Show week numbers at start of each week |
+| `ShowToolbar` | `bool` | `false` | Whether to show the toolbar |
+| **Calendar Navigation** ||||
+| `PickerMonth` | `DateTime?` | `null` | Current month shown in the calendar |
+| `DisplayMonths` | `int` | `1` | Number of months to display |
+| `MaxMonthColumns` | `int?` | `null` | Maximum months allowed in one row |
+| `StartMonth` | `DateTime?` | `null` | Start month when opening picker |
+| **Advanced Options** ||||
+| `AutoClose` | `bool` | `false` | Close picker when value is selected |
+| `ClosingDelay` | `int` | `100` | Delay before closing (milliseconds) |
+| `FixYear` | `int?` | `null` | Fixed year that cannot be changed |
+| `FixMonth` | `int?` | `null` | Fixed month that cannot be changed |
+| `FixDay` | `int?` | `null` | Fixed day that cannot be changed |
+| **Custom Functions** ||||
+| `IsDateDisabledFunc` | `Func<DateTime, bool>?` | `null` | Function to disable specific dates |
+| `AdditionalDateClassesFunc` | `Func<DateTime, string>?` | `null` | Function to add CSS classes to dates |
+| **Events** ||||
+| `DateChanged` | `EventCallback<DateTime?>` | - | Occurs when date changes |
 
-#### SCBRangePicker Properties
+### SCBRangePicker Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `DateRange` | `DateRange` | `new()` | Two-way bound selected date range |
-| `Label` | `string` | `""` | Label text displayed above the picker |
+| **Basic Properties** ||||
+| `DateRange` | `DateRange?` | `null` | Two-way bound selected date range |
+| `Label` | `string?` | `null` | Label text displayed above the picker |
 | `Culture` | `CultureInfo` | `Current UI Culture` | Culture for calendar system and formatting |
-| `DateFormat` | `string` | Culture default | Custom date format string |
-| `RememberRecentRanges` | `bool` | `true` | Whether to remember recent selections |
+| `DateFormat` | `string?` | Culture default | Custom date format string |
 | `Disabled` | `bool` | `false` | Whether the picker is disabled |
 | `ReadOnly` | `bool` | `false` | Whether the picker is read-only |
-| `Class` | `string` | `""` | Additional CSS classes |
-| `Style` | `string` | `""` | Inline CSS styles |
+| `Class` | `string?` | `null` | Additional CSS classes |
+| `Style` | `string?` | `null` | Inline CSS styles |
+| `ShowClear` | `bool` | `true` | Whether to show the Clear button |
+| **Range Constraints** ||||
+| `MinDate` | `DateTime?` | `null` | The minimum selectable date |
+| `MaxDate` | `DateTime?` | `null` | The maximum selectable date |
+| `MinDays` | `int?` | `null` | Minimum number of selectable days |
+| `MaxDays` | `int?` | `null` | Maximum number of selectable days |
+| `PastOnly` | `bool` | `false` | Restrict selections to past dates only |
+| `FutureOnly` | `bool` | `false` | Restrict selections to future dates only |
+| **Range Presets & Recent** ||||
+| `Presets` | `RangeShortcut[]?` | Default presets | List of range shortcuts to display |
+| `RememberRecentRanges` | `bool` | `true` | Whether to remember recent custom ranges |
+| **Display Options** ||||
+| `OpenTo` | `OpenTo` | `Date` | Initial view to display (Date, Month, Year) |
+| `Color` | `Color` | `Primary` | Color theme (Primary, Secondary, Success, Warning, Error, etc.) |
+| `Variant` | `Variant` | `Filled` | Display variant (Text, Filled, Outlined) |
+| `PickerVariant` | `PickerVariant` | `Inline` | Picker behavior (Inline, Dialog, Static) |
+| `FirstDayOfWeek` | `DayOfWeek?` | Culture default | First day of the week |
+| `TitleDateFormat` | `string` | `"ddd, dd MMM"` | Format for date in the title |
+| `ShowWeekNumbers` | `bool` | `false` | Show week numbers at start of each week |
+| `ShowToolbar` | `bool` | `false` | Whether to show the toolbar |
+| **Calendar Navigation** ||||
+| `PickerMonth` | `DateTime?` | `null` | Current month shown in the calendar |
+| `DisplayMonths` | `int` | `2` | Number of months to display (default 2 for range picker) |
+| `MaxMonthColumns` | `int?` | `null` | Maximum months allowed in one row |
+| `StartMonth` | `DateTime?` | `null` | Start month when opening picker |
+| **Button Labels** ||||
+| `ApplyButtonText` | `string` | `"Apply"` | Label for the Apply button |
+| `CancelButtonText` | `string` | `"Cancel"` | Label for the Cancel button |
+| `ClearButtonText` | `string` | `"Clear"` | Label for the Clear button |
+| **Advanced Options** ||||
+| `AutoClose` | `bool` | `false` | Close picker when value is selected |
+| `ClosingDelay` | `int` | `100` | Delay before closing (milliseconds) |
+| `FixYear` | `int?` | `null` | Fixed year that cannot be changed |
+| `FixMonth` | `int?` | `null` | Fixed month that cannot be changed |
+| `FixDay` | `int?` | `null` | Fixed day that cannot be changed |
+| **Custom Functions** ||||
+| `IsDateDisabledFunc` | `Func<DateTime, bool>?` | `null` | Function to disable specific dates |
+| `AdditionalDateClassesFunc` | `Func<DateTime, string>?` | `null` | Function to add CSS classes to dates |
+| **Events** ||||
+| `DateRangeChanged` | `EventCallback<DateRange?>` | - | Occurs when date range changes and is applied |
+| `OnOpen` | `EventCallback` | - | Occurs when picker opens |
+| `OnClose` | `EventCallback` | - | Occurs when picker closes |
+| `OnPreviewChange` | `EventCallback<DateRange?>` | - | Occurs when range preview changes (before apply) |
+| `OnApply` | `EventCallback<DateRange?>` | - | Occurs when Apply is clicked |
+| `OnCancel` | `EventCallback` | - | Occurs when Cancel is clicked |
+| `OnClear` | `EventCallback` | - | Occurs when Clear is clicked |
 
 ### CSS Customization
 
@@ -411,72 +676,122 @@ public class CustomLocalizer : IDatePickerLocalizer
 
 ### DateRange Class
 
+The `DateRange` class represents a date range with start and end dates:
+
 ```csharp
 public class DateRange
 {
     public DateTime? Start { get; set; }
     public DateTime? End { get; set; }
+    
+    // Useful properties
     public bool IsValid => Start.HasValue && End.HasValue && Start <= End;
     public TimeSpan? Duration => IsValid ? End - Start : null;
+    public int Days => IsValid ? ((End!.Value - Start!.Value).Days + 1) : 0;
+    
+    // Constructors
+    public DateRange() { }
+    public DateRange(DateTime? start, DateTime? end) 
+    { 
+        Start = start; 
+        End = end; 
+    }
 }
 ```
 
-### Service Interfaces
+### Enum Values
 
-- `IDatePickerLocalizer` - Interface for custom localization
-- `IDatePickerLocalizerFactory` - Factory for creating localizers
-- `IJsApiService` - JavaScript interop service
-- `IScrollManager` - Manages scroll behavior
-- `IDateTimeProvider` - Provides current date/time
+#### Color Enum
+Available color themes for both date and range pickers:
+- `Default` - Default theme
+- `Primary` - Primary theme (default)
+- `Secondary` - Secondary theme
+- `Info` - Information theme
+- `Success` - Success theme
+- `Warning` - Warning theme
+- `Error` - Error theme
+- `Dark` - Dark theme
+
+#### Variant Enum
+Display variants for input styling:
+- `Text` - No background or border
+- `Filled` - Solid background (default)
+- `Outlined` - Border outline
+
+#### PickerVariant Enum
+Picker display behavior:
+- `Inline` - Shows when input is clicked (default)
+- `Dialog` - Shows in a dialog/modal
+- `Static` - Always visible
+
+#### OpenTo Enum
+Initial view when picker opens:
+- `Date` - Day picker view (default)
+- `Month` - Month selection view
+- `Year` - Year selection view
+
+### Usage Examples
+
+```csharp
+// Create and use a date range
+var range = new DateRange(DateTime.Today, DateTime.Today.AddDays(7));
+
+if (range.IsValid)
+{
+    Console.WriteLine($"Range spans {range.Days} days");
+    Console.WriteLine($"Duration: {range.Duration?.TotalDays} days");
+}
+```
+
+```razor
+<!-- Using different themes and variants -->
+<SCBDatePicker @bind-Date="primaryDate" 
+               Color="Color.Primary"
+               Variant="Variant.Filled"
+               PickerVariant="PickerVariant.Inline" />
+
+<SCBRangePicker @bind-DateRange="warningRange" 
+                Color="Color.Warning"
+                Variant="Variant.Outlined"
+                OpenTo="OpenTo.Month" />
+
+@code {
+    private DateTime? primaryDate;
+    private DateRange warningRange = new();
+}
+```
 
 ## 🚀 Performance Tips
 
-1. **Use `RememberRecentRanges="false"`** if you don't need recent range memory
-2. **Set explicit Culture** instead of relying on automatic detection for better performance
-3. **Use CSS containment** for large lists of date pickers
-4. **Implement virtual scrolling** for applications with many date picker instances
+1. **Disable recent ranges** if not needed: `RememberRecentRanges="false"`
+2. **Set explicit culture** for better performance: `Culture="@(new CultureInfo("en-US"))"`
+3. **Use specific presets** instead of all defaults to reduce UI complexity
+4. **Limit DisplayMonths** for range picker in mobile scenarios
 
 ## 🐛 Troubleshooting
 
-### Common Issues
-
-**Issue**: DatePicker not showing or styling issues
+### DatePicker not showing or styled incorrectly
+Ensure CSS is included in your `_Host.cshtml` or `index.html`:
 ```html
-<!-- Ensure CSS is included -->
 <link href="_content/SophiChain.BlazorDatePicker/scb-datepicker.css" rel="stylesheet" />
 ```
 
-**Issue**: JavaScript errors
+### JavaScript errors in browser console
+Ensure JS is included after Blazor framework:
 ```html
-<!-- Ensure JS is included after Blazor JS -->
 <script src="_framework/blazor.server.js"></script>
 <script src="_content/SophiChain.BlazorDatePicker/SophiChainDatePicker.js"></script>
 ```
 
-**Issue**: Localization not working
+### Localization not working
+Ensure services are registered in `Program.cs`:
 ```csharp
-// Ensure services are registered
 builder.Services.AddSophiChainBlazorDatePicker();
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Setup
-
-1. Clone the repository
-2. Open in Visual Studio 2022 or VS Code
-3. Restore NuGet packages: `dotnet restore`
-4. Build the solution: `dotnet build`
-5. Run the demo: `dotnet run --project SophiChain.BlazorDatePicker.Demo`
-
-### Guidelines
-
-- Follow the existing coding style
-- Add unit tests for new features
-- Update documentation for API changes
-- Test with multiple cultures and calendars
+Contributions are welcome! Please feel free to submit a Pull Request. See the project repository for development guidelines.
 
 ## 📄 License
 
