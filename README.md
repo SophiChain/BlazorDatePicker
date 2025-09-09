@@ -6,6 +6,11 @@
 
 A powerful and customizable DatePicker component for Blazor applications with comprehensive multi-culture support, including Hijri calendar system and automatic localization.
 
+## 🌐 Links
+
+- **📦 NuGet Package**: [https://www.nuget.org/packages/SophiChain.BlazorDatePicker](https://www.nuget.org/packages/SophiChain.BlazorDatePicker)
+- **🚀 Live Demo**: [https://sophichain.github.io/BlazorDatePicker](https://sophichain.github.io/BlazorDatePicker)
+
 ## ✨ Features
 
 - 🗓️ **Single Date Selection**: Clean and intuitive single date picker with keyboard navigation
