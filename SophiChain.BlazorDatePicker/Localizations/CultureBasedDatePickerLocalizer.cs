@@ -76,6 +76,9 @@ public class CultureBasedDatePickerLocalizer : IDatePickerLocalizer
     public string ThisMonth => _currentLocalizer.ThisMonth;
     public string ThisQuarter => _currentLocalizer.ThisQuarter;
     public string ThisYear => _currentLocalizer.ThisYear;
+    public string Next1Day => _currentLocalizer.Next1Day;
+    public string Next2Days => _currentLocalizer.Next2Days;
+    public string Next3Days => _currentLocalizer.Next3Days;
     public string Next7Days => _currentLocalizer.Next7Days;
     public string Next14Days => _currentLocalizer.Next14Days;
     public string Next30Days => _currentLocalizer.Next30Days;
@@ -85,6 +88,14 @@ public class CultureBasedDatePickerLocalizer : IDatePickerLocalizer
     public string NextQuarter => _currentLocalizer.NextQuarter;
     public string NextYear => _currentLocalizer.NextYear;
     public string Custom => _currentLocalizer.Custom;
+    
+    // Validation Messages
+    public string StartDateCannotBeEarlierThan => _currentLocalizer.StartDateCannotBeEarlierThan;
+    public string EndDateCannotBeLaterThan => _currentLocalizer.EndDateCannotBeLaterThan;
+    public string SelectedDatesMustBeInThePast => _currentLocalizer.SelectedDatesMustBeInThePast;
+    public string SelectedDatesMustBeInTheFuture => _currentLocalizer.SelectedDatesMustBeInTheFuture;
+    public string RangeMustBeAtLeastDays => _currentLocalizer.RangeMustBeAtLeastDays;
+    public string RangeCannotExceedDays => _currentLocalizer.RangeCannotExceedDays;
     
     // Method to get localized text for range shortcuts
     public string GetRangeShortcutText(RangeShortcut shortcut) => _currentLocalizer.GetRangeShortcutText(shortcut);

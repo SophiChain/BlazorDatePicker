@@ -56,6 +56,9 @@ public class FrenchDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string ThisMonth => "Ce mois";
     public override string ThisQuarter => "Ce trimestre";
     public override string ThisYear => "Cette année";
+    public override string Next1Day => "1 prochain jour";
+    public override string Next2Days => "2 prochains jours";
+    public override string Next3Days => "3 prochains jours";
     public override string Next7Days => "7 prochains jours";
     public override string Next14Days => "14 prochains jours";
     public override string Next30Days => "30 prochains jours";
@@ -65,4 +68,12 @@ public class FrenchDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string NextQuarter => "Trimestre prochain";
     public override string NextYear => "Année prochaine";
     public override string Custom => "Personnalisé";
+    
+    // Validation Messages
+    public override string StartDateCannotBeEarlierThan => "La date de début ne peut pas être antérieure au {0}";
+    public override string EndDateCannotBeLaterThan => "La date de fin ne peut pas être postérieure au {0}";
+    public override string SelectedDatesMustBeInThePast => "Les dates sélectionnées doivent être dans le passé";
+    public override string SelectedDatesMustBeInTheFuture => "Les dates sélectionnées doivent être dans le futur";
+    public override string RangeMustBeAtLeastDays => "La plage doit être d'au moins {0} jours";
+    public override string RangeCannotExceedDays => "La plage ne peut pas dépasser {0} jours";
 }

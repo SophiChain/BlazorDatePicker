@@ -56,6 +56,9 @@ public class ArabicDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string ThisMonth => "هذا الشهر";
     public override string ThisQuarter => "هذا الربع";
     public override string ThisYear => "هذا العام";
+    public override string Next1Day => "اليوم القادم";
+    public override string Next2Days => "اليومان القادمان";
+    public override string Next3Days => "الـ ٣ أيام القادمة";
     public override string Next7Days => "الـ ٧ أيام القادمة";
     public override string Next14Days => "الـ ١٤ يوماً القادمة";
     public override string Next30Days => "الـ ٣٠ يوماً القادمة";
@@ -65,4 +68,12 @@ public class ArabicDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string NextQuarter => "الربع القادم";
     public override string NextYear => "العام القادم";
     public override string Custom => "مخصص";
+    
+    // Validation Messages
+    public override string StartDateCannotBeEarlierThan => "لا يمكن أن يكون تاريخ البداية أقدم من {0}";
+    public override string EndDateCannotBeLaterThan => "لا يمكن أن يكون تاريخ النهاية أحدث من {0}";
+    public override string SelectedDatesMustBeInThePast => "يجب أن تكون التواريخ المحددة في الماضي";
+    public override string SelectedDatesMustBeInTheFuture => "يجب أن تكون التواريخ المحددة في المستقبل";
+    public override string RangeMustBeAtLeastDays => "يجب أن يكون النطاق على الأقل {0} أيام";
+    public override string RangeCannotExceedDays => "لا يمكن أن يتجاوز النطاق {0} أيام";
 }

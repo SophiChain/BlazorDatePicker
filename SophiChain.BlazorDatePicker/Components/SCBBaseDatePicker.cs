@@ -214,8 +214,12 @@ public abstract class SCBBaseDatePicker : SCBPicker<DateTime?>
 
     protected virtual bool IsDayDisabled(DateTime date)
     {
-        return date < MinDate ||
-               date > MaxDate ||
+        var dateOnly = date.Date;
+        var minDateOnly = MinDate?.Date;
+        var maxDateOnly = MaxDate?.Date;
+        
+        return (minDateOnly.HasValue && dateOnly < minDateOnly.Value) ||
+               (maxDateOnly.HasValue && dateOnly > maxDateOnly.Value) ||
                (IsDateDisabledFunc?.Invoke(date) ?? false);
     }
 

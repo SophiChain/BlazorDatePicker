@@ -229,6 +229,9 @@ public partial class SCBRangePicker : SCBBaseDatePicker
             RangeShortcut.ThisMonth => GetThisMonth(),
             RangeShortcut.ThisQuarter => GetThisQuarter(),
             RangeShortcut.ThisYear => new DateRange(new DateTime(today.Year, 1, 1), new DateTime(today.Year, 12, 31)),
+            RangeShortcut.Next1Day => new DateRange(today, today.AddDays(1)),
+            RangeShortcut.Next2Days => new DateRange(today, today.AddDays(2)),
+            RangeShortcut.Next3Days => new DateRange(today, today.AddDays(3)),
             RangeShortcut.Next7Days => new DateRange(today, today.AddDays(7)),
             RangeShortcut.Next14Days => new DateRange(today, today.AddDays(14)),
             RangeShortcut.Next30Days => new DateRange(today, today.AddDays(30)),
@@ -299,15 +302,23 @@ public partial class SCBRangePicker : SCBBaseDatePicker
         var firstDayOfWeek = GetFirstDayOfWeek();
         var startOfWeek = today.StartOfWeek(firstDayOfWeek);
         var endOfWeek = startOfWeek.AddDays(6);
-        return new DateRange(startOfWeek, endOfWeek);
+        
+        // If FutureOnly is set, start from today instead of the beginning of the week
+        var start = FutureOnly ? today : startOfWeek;
+        
+        return new DateRange(start, endOfWeek);
     }
 
     private DateRange GetThisMonth()
     {
         var today = DateTime.Today;
-        var start = today.StartOfMonth(Culture);
-        var end = today.EndOfMonth(Culture);
-        return new DateRange(start, end);
+        var startOfMonth = today.StartOfMonth(Culture);
+        var endOfMonth = today.EndOfMonth(Culture);
+        
+        // If FutureOnly is set, start from today instead of the beginning of the month
+        var start = FutureOnly ? today : startOfMonth;
+        
+        return new DateRange(start, endOfMonth);
     }
 
     private DateRange GetThisQuarter()
@@ -545,21 +556,28 @@ public partial class SCBRangePicker : SCBBaseDatePicker
         if (range?.Start == null || range?.End == null)
             return false;
 
+        // Normalize dates to date-only for comparison
+        var startDate = range.Start.Value.Date;
+        var endDate = range.End.Value.Date;
+        var minDateOnly = MinDate?.Date;
+        var maxDateOnly = MaxDate?.Date;
+
         // Check min/max date constraints
-        if (MinDate.HasValue && range.Start < MinDate.Value)
+        if (minDateOnly.HasValue && startDate < minDateOnly.Value)
             return false;
-        if (MaxDate.HasValue && range.End > MaxDate.Value)
+        if (maxDateOnly.HasValue && endDate > maxDateOnly.Value)
             return false;
 
         // Check past/future only constraints
         var today = DateTime.Today;
-        if (PastOnly && (range.Start > today || range.End > today))
+        if (PastOnly && (startDate > today || endDate > today))
             return false;
-        if (FutureOnly && (range.Start < today || range.End < today))
+        // For FutureOnly: all dates must be today or in the future
+        if (FutureOnly && (startDate < today || endDate < today))
             return false;
 
         // Check min/max days constraints
-        var dayDiff = (range.End.Value - range.Start.Value).Days + 1;
+        var dayDiff = (endDate - startDate).Days + 1;
         if (MinDays.HasValue && dayDiff < MinDays.Value)
             return false;
         if (MaxDays.HasValue && dayDiff > MaxDays.Value)
@@ -609,23 +627,29 @@ public partial class SCBRangePicker : SCBBaseDatePicker
         if (_previewRange?.Start == null || _previewRange?.End == null)
             return null;
 
+        // Normalize dates to date-only for comparison
+        var startDate = _previewRange.Start.Value.Date;
+        var endDate = _previewRange.End.Value.Date;
+        var minDateOnly = MinDate?.Date;
+        var maxDateOnly = MaxDate?.Date;
         var today = DateTime.Today;
         
-        if (MinDate.HasValue && _previewRange.Start < MinDate.Value)
-            return $"Start date cannot be earlier than {MinDate.Value:d}";
-        if (MaxDate.HasValue && _previewRange.End > MaxDate.Value)
-            return $"End date cannot be later than {MaxDate.Value:d}";
+        if (minDateOnly.HasValue && startDate < minDateOnly.Value)
+            return string.Format(Localizer.StartDateCannotBeEarlierThan, MinDate.Value.ToString("d", Culture));
+        if (maxDateOnly.HasValue && endDate > maxDateOnly.Value)
+            return string.Format(Localizer.EndDateCannotBeLaterThan, MaxDate.Value.ToString("d", Culture));
             
-        if (PastOnly && (_previewRange.Start > today || _previewRange.End > today))
-            return "Selected dates must be in the past";
-        if (FutureOnly && (_previewRange.Start < today || _previewRange.End < today))
-            return "Selected dates must be in the future";
+        if (PastOnly && (startDate > today || endDate > today))
+            return Localizer.SelectedDatesMustBeInThePast;
+        // For FutureOnly: all dates must be today or in the future
+        if (FutureOnly && (startDate < today || endDate < today))
+            return Localizer.SelectedDatesMustBeInTheFuture;
 
-        var dayDiff = (_previewRange.End.Value - _previewRange.Start.Value).Days + 1;
+        var dayDiff = (endDate - startDate).Days + 1;
         if (MinDays.HasValue && dayDiff < MinDays.Value)
-            return $"Range must be at least {MinDays.Value} days";
+            return string.Format(Localizer.RangeMustBeAtLeastDays, MinDays.Value);
         if (MaxDays.HasValue && dayDiff > MaxDays.Value)
-            return $"Range cannot exceed {MaxDays.Value} days";
+            return string.Format(Localizer.RangeCannotExceedDays, MaxDays.Value);
 
         return null;
     }

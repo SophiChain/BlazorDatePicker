@@ -56,6 +56,9 @@ public class SpanishDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string ThisMonth => "Este mes";
     public override string ThisQuarter => "Este trimestre";
     public override string ThisYear => "Este año";
+    public override string Next1Day => "Próximo 1 día";
+    public override string Next2Days => "Próximos 2 días";
+    public override string Next3Days => "Próximos 3 días";
     public override string Next7Days => "Próximos 7 días";
     public override string Next14Days => "Próximos 14 días";
     public override string Next30Days => "Próximos 30 días";
@@ -65,4 +68,12 @@ public class SpanishDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string NextQuarter => "Próximo trimestre";
     public override string NextYear => "Próximo año";
     public override string Custom => "Personalizado";
+    
+    // Validation Messages
+    public override string StartDateCannotBeEarlierThan => "La fecha de inicio no puede ser anterior a {0}";
+    public override string EndDateCannotBeLaterThan => "La fecha de fin no puede ser posterior a {0}";
+    public override string SelectedDatesMustBeInThePast => "Las fechas seleccionadas deben estar en el pasado";
+    public override string SelectedDatesMustBeInTheFuture => "Las fechas seleccionadas deben estar en el futuro";
+    public override string RangeMustBeAtLeastDays => "El rango debe ser de al menos {0} días";
+    public override string RangeCannotExceedDays => "El rango no puede exceder {0} días";
 }
