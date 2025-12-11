@@ -56,6 +56,9 @@ public class GermanDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string ThisMonth => "Dieser Monat";
     public override string ThisQuarter => "Dieses Quartal";
     public override string ThisYear => "Dieses Jahr";
+    public override string Next1Day => "Nächster 1 Tag";
+    public override string Next2Days => "Nächste 2 Tage";
+    public override string Next3Days => "Nächste 3 Tage";
     public override string Next7Days => "Nächste 7 Tage";
     public override string Next14Days => "Nächste 14 Tage";
     public override string Next30Days => "Nächste 30 Tage";
@@ -65,4 +68,12 @@ public class GermanDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string NextQuarter => "Nächstes Quartal";
     public override string NextYear => "Nächstes Jahr";
     public override string Custom => "Benutzerdefiniert";
+    
+    // Validation Messages
+    public override string StartDateCannotBeEarlierThan => "Das Startdatum darf nicht vor dem {0} liegen";
+    public override string EndDateCannotBeLaterThan => "Das Enddatum darf nicht nach dem {0} liegen";
+    public override string SelectedDatesMustBeInThePast => "Die ausgewählten Daten müssen in der Vergangenheit liegen";
+    public override string SelectedDatesMustBeInTheFuture => "Die ausgewählten Daten müssen in der Zukunft liegen";
+    public override string RangeMustBeAtLeastDays => "Der Bereich muss mindestens {0} Tage betragen";
+    public override string RangeCannotExceedDays => "Der Bereich darf {0} Tage nicht überschreiten";
 }

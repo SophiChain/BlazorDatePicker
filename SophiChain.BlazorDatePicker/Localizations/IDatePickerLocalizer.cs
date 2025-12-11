@@ -56,6 +56,9 @@ public interface IDatePickerLocalizer
     string ThisMonth { get; }
     string ThisQuarter { get; }
     string ThisYear { get; }
+    string Next1Day { get; }
+    string Next2Days { get; }
+    string Next3Days { get; }
     string Next7Days { get; }
     string Next14Days { get; }
     string Next30Days { get; }
@@ -65,6 +68,14 @@ public interface IDatePickerLocalizer
     string NextQuarter { get; }
     string NextYear { get; }
     string Custom { get; }
+    
+    // Validation Messages
+    string StartDateCannotBeEarlierThan { get; }
+    string EndDateCannotBeLaterThan { get; }
+    string SelectedDatesMustBeInThePast { get; }
+    string SelectedDatesMustBeInTheFuture { get; }
+    string RangeMustBeAtLeastDays { get; }
+    string RangeCannotExceedDays { get; }
     
     // Method to get localized text for range shortcuts
     string GetRangeShortcutText(RangeShortcut shortcut);

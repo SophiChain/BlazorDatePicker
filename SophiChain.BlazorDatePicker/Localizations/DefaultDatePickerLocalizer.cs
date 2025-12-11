@@ -56,6 +56,9 @@ public class DefaultDatePickerLocalizer : IDatePickerLocalizer
     public virtual string ThisMonth => "This month";
     public virtual string ThisQuarter => "This quarter";
     public virtual string ThisYear => "This year";
+    public virtual string Next1Day => "Next 1 day";
+    public virtual string Next2Days => "Next 2 days";
+    public virtual string Next3Days => "Next 3 days";
     public virtual string Next7Days => "Next 7 days";
     public virtual string Next14Days => "Next 14 days";
     public virtual string Next30Days => "Next 30 days";
@@ -65,6 +68,14 @@ public class DefaultDatePickerLocalizer : IDatePickerLocalizer
     public virtual string NextQuarter => "Next quarter";
     public virtual string NextYear => "Next year";
     public virtual string Custom => "Custom";
+    
+    // Validation Messages
+    public virtual string StartDateCannotBeEarlierThan => "Start date cannot be earlier than {0}";
+    public virtual string EndDateCannotBeLaterThan => "End date cannot be later than {0}";
+    public virtual string SelectedDatesMustBeInThePast => "Selected dates must be in the past";
+    public virtual string SelectedDatesMustBeInTheFuture => "Selected dates must be in the future";
+    public virtual string RangeMustBeAtLeastDays => "Range must be at least {0} days";
+    public virtual string RangeCannotExceedDays => "Range cannot exceed {0} days";
     
     /// <summary>
     /// Gets the localized text for a range shortcut.
@@ -95,6 +106,9 @@ public class DefaultDatePickerLocalizer : IDatePickerLocalizer
             RangeShortcut.ThisMonth => ThisMonth,
             RangeShortcut.ThisQuarter => ThisQuarter,
             RangeShortcut.ThisYear => ThisYear,
+            RangeShortcut.Next1Day => Next1Day,
+            RangeShortcut.Next2Days => Next2Days,
+            RangeShortcut.Next3Days => Next3Days,
             RangeShortcut.Next7Days => Next7Days,
             RangeShortcut.Next14Days => Next14Days,
             RangeShortcut.Next30Days => Next30Days,

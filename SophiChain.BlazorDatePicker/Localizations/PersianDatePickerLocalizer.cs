@@ -56,6 +56,9 @@ public class PersianDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string ThisMonth => "این ماه";
     public override string ThisQuarter => "این فصل";
     public override string ThisYear => "امسال";
+    public override string Next1Day => "۱ روز آینده";
+    public override string Next2Days => "۲ روز آینده";
+    public override string Next3Days => "۳ روز آینده";
     public override string Next7Days => "۷ روز آینده";
     public override string Next14Days => "۱۴ روز آینده";
     public override string Next30Days => "۳۰ روز آینده";
@@ -65,4 +68,12 @@ public class PersianDatePickerLocalizer : DefaultDatePickerLocalizer
     public override string NextQuarter => "فصل آینده";
     public override string NextYear => "سال آینده";
     public override string Custom => "سفارشی";
+    
+    // Validation Messages
+    public override string StartDateCannotBeEarlierThan => "تاریخ شروع نمی‌تواند زودتر از {0} باشد";
+    public override string EndDateCannotBeLaterThan => "تاریخ پایان نمی‌تواند دیرتر از {0} باشد";
+    public override string SelectedDatesMustBeInThePast => "تاریخ‌های انتخاب شده باید در گذشته باشند";
+    public override string SelectedDatesMustBeInTheFuture => "تاریخ‌های انتخاب شده باید در آینده باشند";
+    public override string RangeMustBeAtLeastDays => "بازه باید حداقل {0} روز باشد";
+    public override string RangeCannotExceedDays => "بازه نمی‌تواند بیش از {0} روز باشد";
 }

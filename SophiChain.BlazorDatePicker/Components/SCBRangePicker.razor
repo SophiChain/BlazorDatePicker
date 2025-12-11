@@ -39,64 +39,68 @@
             <!-- Main Content -->
             <div class="scb-rangepicker-content">
                 
-                <!-- Left Column: Presets and Recent Ranges -->
-                <div class="scb-rangepicker-presets">
-                    
-                    <!-- Recent Ranges -->
-                    @if (RememberRecentRanges && _recentRanges.Any())
-                    {
-                        <div class="scb-preset-section">
-                            <h5 class="scb-preset-title">@Localizer.Recent</h5>
-                            @foreach (var recentRange in _recentRanges)
-                            {
-                                <button type="button" 
-                                        class="scb-preset-item @(IsRecentRangeSelected(recentRange) ? "scb-preset-selected" : "")"
-                                        @onclick="(() => SelectRecentRangeAsync(recentRange))">
-                                    @recentRange.Start?.ToString("MMM d", Culture) - @recentRange.End?.ToString("MMM d", Culture)
-                                </button>
-                            }
-                        </div>
-                    }
-
-                    <!-- Presets -->
-                    <div class="scb-preset-section">
-                        <h5 class="scb-preset-title">@Localizer.QuickSelect</h5>
-                        @foreach (var preset in GetActivePresets())
-                        {
-                            <button type="button" 
-                                    class="scb-preset-item @(_selectedPreset == preset ? "scb-preset-selected" : "")"
-                                    @onclick="(() => SelectPresetAsync(preset))">
-                                @Localizer.GetRangeShortcutText(preset)
-                            </button>
-                        }
-                    </div>
-                </div>
-
-                <!-- Right Column: Inputs and Calendar -->
+                <!-- Main Column: Preset Select, Inputs and Calendar -->
                 <div class="scb-rangepicker-main">
                     
-                    <!-- Date Inputs -->
-                    <div class="scb-rangepicker-inputs">
-                        <div class="scb-input-group">
-                            <label for="start-date">@Localizer.StartDate</label>
-                            <input type="text" 
-                                   id="start-date"
-                                   class="scb-input" 
-                                   placeholder="@Localizer.StartDate" 
-                                   value="@GetStartText()" 
-                                   @onchange="OnStartTextChanged"
-                                   @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+                    <!-- Preset Dropdown and Date Inputs Row -->
+                    <div class="scb-rangepicker-top-row">
+                        <!-- Preset Dropdown -->
+                        <div class="scb-preset-select-group">
+                            <label for="preset-select">@Localizer.QuickSelect</label>
+                            <select id="preset-select" 
+                                    class="scb-preset-select" 
+                                    @onchange="OnPresetSelectChanged">
+                                @{
+                                    var currentValue = GetSelectedPresetValue();
+                                }
+                                <option value="" selected="@(currentValue == "")">@Localizer.Custom</option>
+                                @if (RememberRecentRanges && _recentRanges.Any())
+                                {
+                                    <optgroup label="@Localizer.Recent">
+                                        @for (int i = 0; i < _recentRanges.Count; i++)
+                                        {
+                                            var recentRange = _recentRanges[i];
+                                            var rangeValue = $"recent_{i}";
+                                            <option value="@rangeValue" selected="@(currentValue == rangeValue)">@recentRange.Start?.ToString("MMM d", Culture) - @recentRange.End?.ToString("MMM d", Culture)</option>
+                                        }
+                                    </optgroup>
+                                }
+                                <optgroup label="@Localizer.QuickSelect">
+                                    @foreach (var preset in GetActivePresets())
+                                    {
+                                        if (preset != RangeShortcut.Custom)
+                                        {
+                                            var presetValue = preset.ToString();
+                                            <option value="@presetValue" selected="@(currentValue == presetValue)">@Localizer.GetRangeShortcutText(preset)</option>
+                                        }
+                                    }
+                                </optgroup>
+                            </select>
                         </div>
-                        <div class="scb-input-separator">→</div>
-                        <div class="scb-input-group">
-                            <label for="end-date">@Localizer.EndDate</label>
-                            <input type="text" 
-                                   id="end-date"
-                                   class="scb-input" 
-                                   placeholder="@Localizer.EndDate" 
-                                   value="@GetEndText()" 
-                                   @onchange="OnEndTextChanged"
-                                   @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+
+                        <!-- Date Inputs -->
+                        <div class="scb-rangepicker-inputs">
+                            <div class="scb-input-group">
+                                <label for="start-date">@Localizer.StartDate</label>
+                                <input type="text" 
+                                       id="start-date"
+                                       class="scb-input" 
+                                       placeholder="@Localizer.StartDate" 
+                                       value="@GetStartText()" 
+                                       @onchange="OnStartTextChanged"
+                                       @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+                            </div>
+                            <div class="scb-input-separator">→</div>
+                            <div class="scb-input-group">
+                                <label for="end-date">@Localizer.EndDate</label>
+                                <input type="text" 
+                                       id="end-date"
+                                       class="scb-input" 
+                                       placeholder="@Localizer.EndDate" 
+                                       value="@GetEndText()" 
+                                       @onchange="OnEndTextChanged"
+                                       @onfocus="(() => _selectedPreset = RangeShortcut.Custom)" />
+                            </div>
                         </div>
                     </div>
 
@@ -382,5 +386,55 @@
     protected void ShowMonthPicker(int monthOffset)
     {
         // Future enhancement: implement month/year picker popup
+    }
+
+    protected string GetSelectedPresetValue()
+    {
+        if (_selectedPreset.HasValue && _selectedPreset != RangeShortcut.Custom)
+        {
+            return _selectedPreset.Value.ToString();
+        }
+        
+        if (RememberRecentRanges && _recentRanges.Any() && _previewRange != null)
+        {
+            for (int i = 0; i < _recentRanges.Count; i++)
+            {
+                if (_recentRanges[i].Start == _previewRange.Start && _recentRanges[i].End == _previewRange.End)
+                {
+                    return $"recent_{i}";
+                }
+            }
+        }
+        
+        return "";
+    }
+
+    protected async Task OnPresetSelectChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        
+        if (string.IsNullOrEmpty(value))
+        {
+            _selectedPreset = RangeShortcut.Custom;
+            _previewRange = null;
+            _hasValidRange = false;
+            ResetSelectionState();
+            await OnPreviewChange.InvokeAsync(_previewRange);
+            StateHasChanged();
+            return;
+        }
+        
+        if (value.StartsWith("recent_"))
+        {
+            var indexStr = value.Substring(7);
+            if (int.TryParse(indexStr, out int index) && index >= 0 && index < _recentRanges.Count)
+            {
+                await SelectRecentRangeAsync(_recentRanges[index]);
+            }
+        }
+        else if (Enum.TryParse<RangeShortcut>(value, out var preset))
+        {
+            await SelectPresetAsync(preset);
+        }
     }
 }

@@ -926,11 +926,57 @@
     flex-direction: column;
 }
 
+.scb-rangepicker-top-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.scb-preset-select-group {
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.scb-preset-select-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--scb-muted-text);
+}
+
+.scb-preset-select {
+    padding: 10px 12px;
+    border: 2px solid var(--scb-border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--scb-text-color);
+    background-color: var(--scb-background-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.scb-preset-select:focus {
+    outline: none;
+    border-color: var(--scb-focus-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.scb-preset-select:hover {
+    border-color: var(--scb-focus-color);
+}
+
 .scb-rangepicker-inputs {
     display: flex;
     align-items: flex-end;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 12px;
+    flex: 1;
 }
 
 .scb-input-group {
@@ -1334,9 +1380,17 @@
         gap: 20px;
     }
     
-    .scb-rangepicker-inputs {
+    .scb-rangepicker-top-row {
         flex-direction: column;
         gap: 12px;
+    }
+    
+    .scb-preset-select-group {
+        min-width: 100%;
+    }
+    
+    .scb-rangepicker-inputs {
+        width: 100%;
     }
     
     .scb-input-separator {
@@ -1404,6 +1458,16 @@
 
 [dir="rtl"] .scb-rangepicker-inputs {
     direction: rtl;
+}
+
+[dir="rtl"] .scb-rangepicker-top-row {
+    direction: rtl;
+}
+
+[dir="rtl"] .scb-preset-select {
+    background-position: left 12px center;
+    padding-left: 36px;
+    padding-right: 12px;
 }
 
 [dir="rtl"] .scb-input-separator {

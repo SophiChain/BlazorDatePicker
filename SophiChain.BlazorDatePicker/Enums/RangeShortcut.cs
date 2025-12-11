@@ -140,6 +140,24 @@ public enum RangeShortcut
     ThisYear,
 
     /// <summary>
+    /// Next 1 day (today to tomorrow).
+    /// </summary>
+    [Description("Next 1 day")]
+    Next1Day,
+
+    /// <summary>
+    /// Next 2 days (today to 2 days from today).
+    /// </summary>
+    [Description("Next 2 days")]
+    Next2Days,
+
+    /// <summary>
+    /// Next 3 days (today to 3 days from today).
+    /// </summary>
+    [Description("Next 3 days")]
+    Next3Days,
+
+    /// <summary>
     /// Next 7 days (today to 7 days from today).
     /// </summary>
     [Description("Next 7 days")]
