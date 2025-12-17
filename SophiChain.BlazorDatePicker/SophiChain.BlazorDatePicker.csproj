@@ -10,7 +10,7 @@
     <Title>SophiChain Blazor DatePicker</Title>
     <Description>A powerful and customizable DatePicker component for Blazor applications with multi-culture support including Hijri calendar.</Description>
     <PackageTags>blazor,datepicker,hijri,calendar,multicultural</PackageTags>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Pooria Shariatzadeh</Authors>
     <Company>SophiChain</Company>
     <Copyright>Copyright (c) SophiChain 2025</Copyright>
