@@ -296,19 +296,30 @@
     {
         if (HasValidDate() && _previewDate != null)
         {
+            // Close modal immediately for better UX - gives immediate feedback
+            _showPicker = false;
+            StateHasChanged();
+            
+            // Execute async operations after closing the modal
             await SetDateAsync(_previewDate.Value);
         }
-        _showPicker = false;
-        StateHasChanged();
+        else
+        {
+            _showPicker = false;
+            StateHasChanged();
+        }
     }
 
     protected async Task ClearAsync()
     {
-        await SetDateAsync(null);
+        // Close modal immediately for better UX - gives immediate feedback
+        _showPicker = false;
         _previewDate = null;
         PreviewDate = _previewDate; // Sync with base class property
-        _showPicker = false;
         StateHasChanged();
+        
+        // Execute async operations after closing the modal
+        await SetDateAsync(null);
     }
 
     protected bool HasValidDate()
