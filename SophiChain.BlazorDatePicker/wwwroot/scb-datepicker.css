@@ -1215,6 +1215,21 @@
     border-bottom-left-radius: 2px !important;
 }
 
+/* RTL: Reverse border radius for range start/end selected dates */
+[dir="rtl"] .scb-day-button.scb-range-start-selected {
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
+    border-top-left-radius: 2px !important;
+    border-bottom-left-radius: 2px !important;
+}
+
+[dir="rtl"] .scb-day-button.scb-range-end-selected {
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
+    border-top-right-radius: 2px !important;
+    border-bottom-right-radius: 2px !important;
+}
+
 .scb-day-button.scb-current {
     position: relative;
     font-weight: 600;

@@ -430,6 +430,10 @@ public partial class SCBRangePicker : SCBBaseDatePicker
     {
         if (_hasValidRange && _previewRange != null)
         {
+            // Close modal immediately for better UX - gives immediate feedback
+            await HideAsync();
+            
+            // Execute async operations after closing the modal
             await SetDateRangeAsync(_previewRange);
             
             // Add to recent ranges if it's a custom selection
@@ -439,7 +443,6 @@ public partial class SCBRangePicker : SCBBaseDatePicker
             }
             
             await OnApply.InvokeAsync(_previewRange);
-            await HideAsync();
         }
     }
 
