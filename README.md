@@ -816,6 +816,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📈 Changelog
 
+### Version 1.0.1
+- 🐛 **Fixed**: Persian calendar disabled days bug - Some days appeared disabled incorrectly because `GetMonthStart()` was using Gregorian `DateTime.Year`/`DateTime.Month` properties instead of `Culture.Calendar.GetYear()`/`Culture.Calendar.GetMonth()` for non-Gregorian calendars
+- ✨ **Added**: New localization properties for Persian language support:
+  - `AllTime` - "همه زمان‌ها"
+  - `PreviousBusinessWeek` - "هفته کاری قبل"
+  - `PreviousBusinessMonth` - "ماه کاری قبل"
+- ⚠️ **Note**: Attempted Persian UX improvements (Persian numerals ۰-۹, RTL navigation arrows, Persian fonts) were reverted due to display issues causing `?` or `??` characters
+
 ### Version 1.0.0
 - 🎉 Initial release
 - ✅ Single date picker component

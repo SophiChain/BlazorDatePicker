@@ -230,9 +230,9 @@ public abstract class SCBBaseDatePicker : SCBPicker<DateTime?>
     {
         var today = DateTime.Today;
         var monthStartDate = PickerMonth ?? today.StartOfMonth(Culture);
-        var correctYear = FixYear ?? monthStartDate.Year;
-        var correctMonth = FixMonth ?? monthStartDate.Month;
-        monthStartDate = new DateTime(correctYear, correctMonth, monthStartDate.Day, 0, 0, 0, DateTimeKind.Utc);
+        var correctYear = FixYear ?? Culture.Calendar.GetYear(monthStartDate);
+        var correctMonth = FixMonth ?? Culture.Calendar.GetMonth(monthStartDate);
+        monthStartDate = Culture.Calendar.ToDateTime(correctYear, correctMonth, 1, 0, 0, 0, 0);
 
         if (PickerMonth is { Year: 1, Month: 1 })
         {
